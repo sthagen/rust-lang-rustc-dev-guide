@@ -262,7 +262,7 @@ Moreover, the compiler wasn't originally built to use a query system; the query
 system has been retrofitted into the compiler, so parts of it are not query-fied
 yet. Also, LLVM isn't our code, so that isn't querified either. The plan is to
 eventually query-fy all of the steps listed in the previous section,
-but as of <!-- date: 2021-02 --> February 2021, only the steps between HIR and
+but as of <!-- date: 2021-11 --> November 2021, only the steps between HIR and
 LLVM IR are query-fied. That is, lexing, parsing, name resolution, and macro
 expansion are done all at once for the whole program.
 
@@ -373,15 +373,15 @@ For more details on bootstrapping, see
 - The Mid Level Intermediate Representation (MIR)
   - Guide: [The MIR (Mid level IR)](https://rustc-dev-guide.rust-lang.org/mir/index.html)
   - Definition: [`rustc_middle/src/mir`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/mir/index.html)
-  - Definition of source that manipulates the MIR: [`rustc_mir`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir/index.html)
+  - Definition of sources that manipulates the MIR: [`rustc_mir_build`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir_build/index.html), [`rustc_mir_dataflow`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir_dataflow/index.html), [`rustc_mir_transform`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir_transform/index.html)
 - The Borrow Checker
   - Guide: [MIR Borrow Check](https://rustc-dev-guide.rust-lang.org/borrow_check.html)
-  - Definition: [`rustc_mir/borrow_check`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir/borrow_check/index.html)
-  - Main entry point: [`mir_borrowck` query](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir/borrow_check/fn.mir_borrowck.html)
+  - Definition: [`rustc_borrowck`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_borrowck/index.html)
+  - Main entry point: [`mir_borrowck` query](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_borrowck/fn.mir_borrowck.html)
 - MIR Optimizations
   - Guide: [MIR Optimizations](https://rustc-dev-guide.rust-lang.org/mir/optimizations.html)
-  - Definition: [`rustc_mir/transform`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir/transform/index.html)
-  - Main entry point: [`optimized_mir` query](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir/transform/fn.optimized_mir.html)
+  - Definition: [`rustc_mir_transform`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir_transform/index.html)
+  - Main entry point: [`optimized_mir` query](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_mir_transform/fn.optimized_mir.html)
 - Code Generation
   - Guide: [Code Generation](https://rustc-dev-guide.rust-lang.org/backend/codegen.html)
   - Generating Machine Code from LLVM IR with LLVM - **TODO: reference?**

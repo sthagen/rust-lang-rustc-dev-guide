@@ -3,7 +3,7 @@
 <!-- toc -->
 
 The Rust project runs a wide variety of different tests, orchestrated by
-the build system (`x.py test`).  The main test harness for testing the
+the build system (`./x.py test`).  The main test harness for testing the
 compiler itself is a tool called compiletest (located in the
 [`src/tools/compiletest`] directory). This section gives a brief
 overview of how the testing framework is setup, and then gets into some
@@ -126,8 +126,7 @@ essence, it runs `./x.py test` after building for each of them.
 
 The integration bot [bors] is used for coordinating merges to the master branch.
 When a PR is approved, it goes into a [queue] where merges are tested one at a
-time on a wide set of platforms using GitHub Actions (as of <!-- date: 2021-01
---> January 2021, over 50 different configurations). Due to the limit on the
+time on a wide set of platforms using GitHub Actions. Due to the limit on the
 number of parallel jobs, we run CI under the [rust-lang-ci] organization except
 for PRs. Most platforms only run the build steps, some run a restricted set of
 tests, only a subset run the full suite of tests (see Rust's [platform tiers]).

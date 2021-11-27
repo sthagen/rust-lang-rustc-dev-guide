@@ -158,7 +158,7 @@ These changes are not changes to files: they are changes to submodules (more on
 this [later](#git-submodules)). To get rid of those, run `git submodule update`
 (or run any `x.py` command, which will automatically update the submodules).
 Note that there is (as of <!-- date: 2021-07 --> July 2021) a [bug][#77620] if you use
-worktrees, submodules, and x.py in a commit hook.  If you run into an error
+worktrees, submodules, and `x.py` in a commit hook.  If you run into an error
 like:
 
 ```
@@ -408,7 +408,7 @@ nothing to commit, working tree clean
 ```
 
 As far as git is concerned, you are no longer in the `rust` repo, but in the `miri` repo.
-You will notice that we are in "detatched HEAD" state, i.e. not on a branch but on a
+You will notice that we are in "detached HEAD" state, i.e. not on a branch but on a
 particular commit.
 
 This is because, like any dependency, we want to be able to control which version to use.

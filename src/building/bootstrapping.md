@@ -2,11 +2,8 @@
 
 <!-- toc -->
 
-This subchapter is about the bootstrapping process.
 
-## What is bootstrapping? How does it work?
-
-[Bootstrapping] is the process of using a compiler to compile itself.
+[*Bootstrapping*][boot] is the process of using a compiler to compile itself.
 More accurately, it means using an older compiler to compile a newer version
 of the same compiler.
 
@@ -21,45 +18,53 @@ rustc, then uses it to compile the new compiler.
 
 ## Stages of bootstrapping
 
-Compiling `rustc` is done in stages:
+Compiling `rustc` is done in stages.
 
-- **Stage 0:** the stage0 compiler is usually (you can configure `x.py` to use
-  something else) the current _beta_ `rustc` compiler and its associated dynamic
-  libraries (which `x.py` will download for you). This stage0 compiler is then
-  used only to compile `rustbuild`, `std`, and `rustc`. When compiling
-  `rustc`, this stage0 compiler uses the freshly compiled `std`.
-  There are two concepts at play here: a compiler (with its set of dependencies)
-  and its 'target' or 'object' libraries (`std` and `rustc`).
-  Both are staged, but in a staggered manner.
-- **Stage 1:** the code in your clone (for new version) is then
-  compiled with the stage0 compiler to produce the stage1 compiler.
-  However, it was built with an older compiler (stage0), so to
-  optimize the stage1 compiler we go to the next stage.
-  - In theory, the stage1 compiler is functionally identical to the
-    stage2 compiler, but in practice there are subtle differences. In
-    particular, the stage1 compiler itself was built by stage0 and
-    hence not by the source in your working directory: this means that
-    the symbol names used in the compiler source may not match the
-    symbol names that would have been made by the stage1 compiler. This is
-    important when using dynamic linking and the lack of ABI compatibility
-    between versions. This primarily manifests when tests try to link with any
-    of the `rustc_*` crates or use the (now deprecated) plugin infrastructure.
-    These tests are marked with `ignore-stage1`.
-- **Stage 2:** we rebuild our stage1 compiler with itself to produce
-  the stage2 compiler (i.e. it builds itself) to have all the _latest
-  optimizations_. (By default, we copy the stage1 libraries for use by
-  the stage2 compiler, since they ought to be identical.)
-- _(Optional)_ **Stage 3**: to sanity check our new compiler, we
-  can build the libraries with the stage2 compiler. The result ought
-  to be identical to before, unless something has broken.
+### Stage 0
 
-The `stage2` compiler is the one distributed with `rustup` and all other
-install methods. However, it takes a very long time to build because one must
-first build the new compiler with an older compiler and then use that to
-build the new compiler with itself. For development, you usually only want
-the `stage1` compiler: `x.py build library/std`.
+The stage0 compiler is usually the current _beta_ `rustc` compiler
+and its associated dynamic libraries,
+which `x.py` will download for you.
+(You can also configure `x.py` to use something else.)
 
-### Default stages
+The stage0 compiler is then used only to compile `rustbuild`, `std`, and `rustc`.
+When compiling `rustc`, the stage0 compiler uses the freshly compiled `std`.
+There are two concepts at play here:
+a compiler (with its set of dependencies)
+and its 'target' or 'object' libraries (`std` and `rustc`).
+Both are staged, but in a staggered manner.
+
+### Stage 1
+
+The rustc source code is then compiled with the stage0 compiler to produce the stage1 compiler.
+
+### Stage 2
+
+We then rebuild our stage1 compiler with itself to produce the stage2 compiler.
+
+In theory, the stage1 compiler is functionally identical to the stage2 compiler,
+but in practice there are subtle differences.
+In particular, the stage1 compiler itself was built by stage0
+and hence not by the source in your working directory.
+This means that the symbol names used in the compiler source
+may not match the symbol names that would have been made by the stage1 compiler,
+which can cause problems for dynamic libraries and tests.
+
+The `stage2` compiler is the one distributed with `rustup` and all other install methods.
+However, it takes a very long time to build
+because one must first build the new compiler with an older compiler
+and then use that to build the new compiler with itself.
+For development, you usually only want the `stage1` compiler,
+which you can build with `./x.py build library/std`.
+See [Building the Compiler](./how-to-build-and-run.html#building-the-compiler).
+
+### Stage 3
+
+Stage 3 is optional. To sanity check our new compiler, we
+can build the libraries with the stage2 compiler. The result ought
+to be identical to before, unless something has broken.
+
+### Building the stages
 
 `x.py` tries to be helpful and pick the stage you most likely meant for each subcommand.
 These defaults are as follows:
@@ -96,7 +101,7 @@ _break the stability guarantees_ of rust: Allow using `#![feature(...)]` with
 a compiler that's not nightly. This should never be used except when
 bootstrapping the compiler.
 
-[Bootstrapping]: https://en.wikipedia.org/wiki/Bootstrapping_(compilers)
+[boot]: https://en.wikipedia.org/wiki/Bootstrapping_(compilers)
 [intrinsics]: ../appendix/glossary.md#intrinsic
 [ocaml-compiler]: https://github.com/rust-lang/rust/tree/ef75860a0a72f79f97216f8aaa5b388d98da6480/src/boot
 
@@ -132,9 +137,10 @@ contribution [here][bootstrap-build].
 This is a detailed look into the separate bootstrap stages.
 
 The convention `x.py` uses is that:
+
 - A `--stage N` flag means to run the stage N compiler (`stageN/rustc`).
 - A "stage N artifact" is a build artifact that is _produced_ by the stage N compiler.
-- The "stage (N+1) compiler" is assembled from "stage N artifacts". This
+- The stage N+1 compiler is assembled from stage N *artifacts*. This
   process is called _uplifting_.
 
 #### Build artifacts
@@ -149,51 +155,35 @@ Build artifacts include, but are not limited to:
 
 [rlib]: ../serialization.md
 
-#### Assembling the compiler
-
-There is a separate step between building the compiler and making it possible
-to run. This step is called _assembling_ or _uplifting_ the compiler. It copies
-all the necessary build artifacts from `build/stageN-sysroot` to
-`build/stage(N+1)`, which allows you to use `build/stage(N+1)` as a [toolchain]
-with `rustup toolchain link`.
-
-There is [no way to trigger this step on its own][#73519], but `x.py` will
-perform it automatically any time you build with stage N+1.
-
-[toolchain]: https://rustc-dev-guide.rust-lang.org/building/how-to-build-and-run.html#creating-a-rustup-toolchain
-[#73519]: https://github.com/rust-lang/rust/issues/73519
-
 #### Examples
 
-- `x.py build --stage 0` means to build with the beta `rustc`.
-- `x.py doc --stage 0` means to document using the beta `rustdoc`.
-- `x.py test --stage 0 library/std` means to run tests on the standard library
+- `./x.py build --stage 0` means to build with the beta `rustc`.
+- `./x.py doc --stage 0` means to document using the beta `rustdoc`.
+- `./x.py test --stage 0 library/std` means to run tests on the standard library
     without building `rustc` from source ('build with stage 0, then test the
   artifacts'). If you're working on the standard library, this is normally the
   test command you want.
-- `x.py test src/test/ui` means to build the stage 1 compiler and run
+- `./x.py test src/test/ui` means to build the stage 1 compiler and run
   `compiletest` on it. If you're working on the compiler, this is normally the
   test command you want.
 
 #### Examples of what *not* to do
 
-- `x.py test --stage 0 src/test/ui` is not meaningful: it runs tests on the
+- `./x.py test --stage 0 src/test/ui` is not meaningful: it runs tests on the
   _beta_ compiler and doesn't build `rustc` from source. Use `test src/test/ui`
   instead, which builds stage 1 from source.
-- `x.py test --stage 0 compiler/rustc` builds the compiler but runs no tests:
+- `./x.py test --stage 0 compiler/rustc` builds the compiler but runs no tests:
   it's running `cargo test -p rustc`, but cargo doesn't understand Rust's
   tests. You shouldn't need to use this, use `test` instead (without arguments).
-- `x.py build --stage 0 compiler/rustc` builds the compiler, but does
-  not [assemble] it. Use `x.py build library/std` instead, which puts the
-  compiler in `stage1/rustc`.
+- `./x.py build --stage 0 compiler/rustc` builds the compiler, but does not build
+  libstd or even libcore. Most of the time, you'll want `./x.py build
+  library/std` instead, which allows compiling programs without needing to define
+  lang items.
 
-[assemble]: #assembling-the-compiler
-
-### Building vs. Running
-
+### Building vs. running
 
 Note that `build --stage N compiler/rustc` **does not** build the stage N compiler:
-instead it builds the stage _N+1_ compiler _using_ the stage N compiler.
+instead it builds the stage N+1 compiler _using_ the stage N compiler.
 
 In short, _stage 0 uses the stage0 compiler to create stage0 artifacts which
 will later be uplifted to be the stage1 compiler_.
@@ -201,8 +191,8 @@ will later be uplifted to be the stage1 compiler_.
 In each stage, two major steps are performed:
 
 1. `std` is compiled by the stage N compiler.
-2. That `std` is linked to programs built by the stage N compiler, including
-   the stage N artifacts (stage (N+1) compiler).
+2. That `std` is linked to programs built by the stage N compiler,
+   including the stage N artifacts (stage N+1 compiler).
 
 This is somewhat intuitive if one thinks of the stage N artifacts as "just"
 another program we are building with the stage N compiler:
@@ -216,8 +206,6 @@ Here is a chart of a full build using `x.py`:
 Keep in mind this diagram is a simplification, i.e. `rustdoc` can be built at
 different stages, the process is a bit different when passing flags such as
 `--keep-stage`, or if there are non-host targets.
-
-The stage 2 compiler is what is shipped to end-users.
 
 ### Stages and `std`
 
@@ -241,10 +229,12 @@ recompiling that `std`.
 `--keep-stage` simply assumes the previous compile is fine and copies those
 artifacts into the appropriate place, skipping the cargo invocation.
 
-### Cross-compiling
+### Cross-compiling rustc
 
-Building stage2 `std` is different depending on whether you are cross-compiling or not
-(see in the table how stage2 only builds non-host `std` targets).
+*Cross-compiling* is the process of compiling code that will run on another archicture.
+For instance, you might want to build an ARM version of rustc using an x86 machine.
+Building stage2 `std` is different when you are cross-compiling.
+
 This is because `x.py` uses a trick: if `HOST` and `TARGET` are the same,
 it will reuse stage1 `std` for stage2! This is sound because stage1 `std`
 was compiled with the stage1 compiler, i.e. a compiler using the source code
@@ -253,6 +243,8 @@ to the `std` that `stage2/rustc` would compile.
 
 However, when cross-compiling, stage1 `std` will only run on the host.
 So the stage2 compiler has to recompile `std` for the target.
+
+(See in the table how stage2 only builds non-host `std` targets).
 
 ### Why does only libstd use `cfg(bootstrap)`?
 
@@ -356,7 +348,7 @@ You can find more discussion about sysroots in:
 
 [rustdoc PR]: https://github.com/rust-lang/rust/pull/76728
 
-### Directories and artifacts generated by x.py
+### Directories and artifacts generated by `x.py`
 
 The following tables indicate the outputs of various stage actions:
 

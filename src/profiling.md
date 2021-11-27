@@ -5,7 +5,10 @@ This section talks about how to profile the compiler and find out where it spend
 Depending on what you're trying to measure, there are several different approaches:
 
 - If you want to see if a PR improves or regresses compiler performance:
-  - The [rustc-perf](https://github.com/rust-lang/rustc-perf) project makes this easy and can be triggered to run on a PR via the `@rustc-perf` bot.
+  - The [rustc-perf](https://github.com/rust-lang/rustc-perf) project makes this easy and can be triggered to run on a PR via the `@rust-timer` bot.
+    The `@bors try @rust-timer queue` command, in a comment on the PR, will queue a try build and a
+    benchmarking run.
+    Note: you need `try` privileges to be able to do this. More details are available in the [perf collector documentation](https://github.com/rust-lang/rustc-perf/blob/master/collector/README.md).
 
 - If you want a medium-to-high level overview of where `rustc` is spending its time:
   - The `-Z self-profile` flag and [measureme](https://github.com/rust-lang/measureme) tools offer a query-based approach to profiling.
@@ -41,7 +44,7 @@ extension in LLVM bitcode format.
 Example usage:
 ```
 cargo install cargo-llvm-lines
-# On a normal crate you could now run `cargo llvm-lines`, but x.py isn't normal :P
+# On a normal crate you could now run `cargo llvm-lines`, but `x.py` isn't normal :P
 
 # Do a clean before every run, to not mix in the results from previous runs.
 ./x.py clean
@@ -85,7 +88,7 @@ Example output for the compiler:
     326903 (0.7%)      642 (0.0%)  rustc_query_system::query::plumbing::try_execute_query
 ```
 
-Since this doesn't seem to work with incremental compilation or `x.py check`,
+Since this doesn't seem to work with incremental compilation or `./x.py check`,
 you will be compiling rustc _a lot_.
 I recommend changing a few settings in `config.toml` to make it bearable:
 ```

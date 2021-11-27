@@ -20,7 +20,7 @@ cd rust
 
 ## Create a `config.toml`
 
-To start, run `x.py setup`. This will create a `config.toml` with reasonable defaults.
+To start, run `./x.py setup`. This will create a `config.toml` with reasonable defaults.
 
 You may also want to change some of the following settings (and possibly others, such as
 `llvm.ccache`):
@@ -212,6 +212,11 @@ host: x86_64-unknown-linux-gnu
 release: 1.48.0-dev
 LLVM version: 11.0
 ```
+
+The rustup toolchain points to the specified toolchain compiled in your `build` directory,
+so the rustup toolchain will be updated whenever `x.py build` or `x.py test` are run for
+that toolchain/stage.
+
 ## Other `x.py` commands
 
 Here are a few other useful `x.py` commands. We'll cover some of them in detail

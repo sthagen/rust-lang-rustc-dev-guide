@@ -8,13 +8,13 @@ to make your life easier.
 CI will automatically fail your build if it doesn't pass `tidy`, our
 internal tool for ensuring code quality. If you'd like, you can install a
 [Git hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
-that will automatically run `x.py test tidy --bless` on each commit, to ensure
+that will automatically run `./x.py test tidy --bless` on each commit, to ensure
 your code is up to par. If you decide later that this behavior is
 undesirable, you can delete the `pre-commit` file in `.git/hooks`.
 
 A prebuilt git hook lives at [`src/etc/pre-commit.sh`](https://github.com/rust-lang/rust/blob/master/src/etc/pre-commit.sh) which can be copied into your `.git/hooks` folder as `pre-commit` (without the `.sh` extension!).
 
-You can also install the hook as a step of running `x.py setup`!
+You can also install the hook as a step of running `./x.py setup`!
 
 ## Configuring `rust-analyzer` for `rustc`
 
@@ -32,7 +32,7 @@ you can write: <!-- date: 2021-09 --><!-- the date comment is for the edition be
         "--json-output"
     ],
     "rust-analyzer.rustfmt.overrideCommand": [
-        "./build/TARGET_TRIPLE/stage0/bin/rustfmt",
+        "./build/$TARGET_TRIPLE/stage0/bin/rustfmt",
         "--edition=2021"
     ],
     "editor.formatOnSave": true,
@@ -43,14 +43,19 @@ you can write: <!-- date: 2021-09 --><!-- the date comment is for the edition be
 ```
 
 in your `.vscode/settings.json` file. This will ask `rust-analyzer` to use
-`x.py check` to check the sources, and the stage 0 rustfmt to format them.
+`./x.py check` to check the sources, and the stage 0 rustfmt to format them.
+
+> NOTE: Make sure to replace `TARGET_TRIPLE` in the `rust-analyzer.rustfmt.overrideCommand`
+> setting with the appropriate target triple for your machine. An example of such
+> a triple is `x86_64-unknown-linux-gnu`. An easy way to check your target triple
+> is to run `rustc -vV` and checking the `host` value of its output.
 
 If you're running `coc.nvim`, you can use `:CocLocalConfig` to create a
 `.vim/coc-settings.json` and enter the same settings as above, but replacing
 `editor.formatOnSave: true,` with
 `"coc.preferences.formatOnSaveFiletypes": ["rust"],`.
 
-If running `x.py check` on save is inconvenient, in VS Code you can use a [Build
+If running `./x.py check` on save is inconvenient, in VS Code you can use a [Build
 Task] instead:
 
 ```JSON

@@ -12,7 +12,7 @@ control-flow graph
 spans associated with MIR elements (including mouse-over actions to reveal
 elements obscured by overlaps, and tooltips to view the MIR statements).
 This flag takes an optional value: `statement` (the default), `terminator`, or
-`block`, to generate span highlights with different levels of granulatity.
+`block`, to generate span highlights with different levels of granularity.
 
 `-Z dump-mir=F` is a handy compiler options that will let you view the MIR for
 each function at each stage of compilation. `-Z dump-mir` takes a **filter** `F`
@@ -60,7 +60,7 @@ will select for things that reference *both* `main` and the pass
 > ls mir_dump
 rustc.main.000-000.CleanEndRegions.after.mir	rustc.main.000-000.CleanEndRegions.before.mir
 ```
-
+<!--- TODO: Change NoLandingPads. [#1232](https://github.com/rust-lang/rustc-dev-guide/issues/1232) -->
 Filters can also have `|` parts to combine multiple sets of
 `&`-filters. For example `main & CleanEndRegions | main &
 NoLandingPads` will select *either* `main` and `CleanEndRegions` *or*
