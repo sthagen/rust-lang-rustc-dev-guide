@@ -11,6 +11,12 @@ see [the next page](./prerequisites.md).
 
 ## Get the source code
 
+The main repository is [`rust-lang/rust`][repo]. This contains the compiler,
+the standard library (including `core`, `alloc`, `test`, `proc_macro`, etc),
+and a bunch of tools (e.g. `rustdoc`, the bootstrapping infrastructure, etc).
+
+[repo]: https://github.com/rust-lang/rust
+
 The very first step to work on `rustc` is to clone the repository:
 
 ```bash
@@ -18,35 +24,49 @@ git clone https://github.com/rust-lang/rust.git
 cd rust
 ```
 
+There are also submodules for things like LLVM, `clippy`, `miri`, etc. The
+build tool will automatically clone and sync these for you. But if you want to,
+you can do the following:
+
+```sh
+# first time
+git submodule update --init --recursive
+
+# subsequent times (to pull new commits)
+git submodule update
+```
+
 ## Create a `config.toml`
 
-To start, run `./x.py setup`. This will create a `config.toml` with reasonable defaults.
+To start, run `./x.py setup`. This will do some initialization and create a
+`config.toml` for you with reasonable defaults. These defaults are specified
+indirectly via the `profile` setting, which points to one of the TOML files in
+`src/bootstrap/defaults.`
 
-You may also want to change some of the following settings (and possibly others, such as
+Alternatively, you can write `config.toml` by hand. See `config.toml.example`
+for all the available settings and explanations of them. The following settings
+are of particular interest, and `config.toml.example` has full explanations.
+
+You may want to change some of the following settings (and possibly others, such as
 `llvm.ccache`):
 
 ```toml
 [llvm]
 # Whether to use Rust CI built LLVM instead of locally building it.
-download-ci-llvm = true
-
-# Indicates whether the LLVM assertions are enabled or not
-assertions = true
+download-ci-llvm = true     # Download a pre-built LLVM?
+assertions = true           # LLVM assertions on?
+ccache = "/path/to/ccache"  # Use ccache when building LLVM?
 
 [rust]
-# Whether or not to leave debug! and trace! calls in the rust binary.
-# Overrides the `debug-assertions` option, if defined.
-#
-# Defaults to rust.debug-assertions value
-#
-# If you see a message from `tracing` saying
-# `max_level_info` is enabled and means logging won't be shown,
-# set this value to `true`.
-debug-logging = true
-
-# Whether to always use incremental compilation when building rustc
-incremental = true
+debug-logging = true        # Leave debug! and trace! calls in rustc?
+incremental = true          # Build rustc with incremental compilation?
 ```
+
+If you set `download-ci-llvm = true`, in some circumstances, such as when
+updating the version of LLVM used by `rustc`, you may want to temporarily
+disable this feature. See the ["Updating LLVM" section] for more.
+
+["Updating LLVM" section]: https://rustc-dev-guide.rust-lang.org/backend/updating-llvm.html?highlight=download-ci-llvm#feature-updates
 
 If you have already built `rustc` and you change settings related to LLVM, then you may have to
 execute `rm -rf build` for subsequent configuration changes to take effect. Note that `./x.py
@@ -100,15 +120,15 @@ Options:
         --on-fail CMD   command to run on failure
         --stage N       stage to build
         --keep-stage N  stage to keep without recompiling
-        --src DIR       path to the root of the rust checkout
+        --src DIR       path to the root of the Rust checkout
     -j, --jobs JOBS     number of jobs to run in parallel
     -h, --help          print this help message
 ```
 
-For hacking, often building the stage 1 compiler is enough, but for
-final testing and release, the stage 2 compiler is used.
+For hacking, often building the stage 1 compiler is enough, which saves a lot
+of time. But for final testing and release, the stage 2 compiler is used.
 
-`./x.py check` is really fast to build the rust compiler.
+`./x.py check` is really fast to build the Rust compiler.
 It is, in particular, very useful when you're doing some kind of
 "type-based refactoring", like renaming a method, or changing the
 signature of some function.
@@ -130,7 +150,7 @@ What this command does is the following:
 - Build `std` using the stage1 compiler (cannot use incremental)
 
 This final product (stage1 compiler + libs built using that compiler)
-is what you need to build other rust programs (unless you use `#![no_std]` or
+is what you need to build other Rust programs (unless you use `#![no_std]` or
 `#![no_core]`).
 
 The command includes the `-i` switch which enables incremental compilation.
@@ -148,7 +168,7 @@ there is a (hacky) workaround.  See [the section on "recommended
 workflows"](./suggested.md) below.
 
 Note that this whole command just gives you a subset of the full `rustc`
-build. The **full** `rustc` build (what you get if you say `./x.py build
+build. The **full** `rustc` build (what you get with `./x.py build
 --stage 2 compiler/rustc`) has quite a few more steps:
 
 - Build `rustc` with the stage1 compiler.
@@ -156,20 +176,16 @@ build. The **full** `rustc` build (what you get if you say `./x.py build
 - Build `std` with stage2 compiler.
 - Build `librustdoc` and a bunch of other things with the stage2 compiler.
 
-<a name=toolchain></a>
+You almost never need to do this.
 
 ## Build specific components
 
-- Build only the core library
+If you are working on the standard library, you probably don't need to build
+the compiler unless you are planning to use a recently added nightly feature.
+Instead, you can just build using the bootstrap compiler.
 
 ```bash
-./x.py build --stage 0 library/core
-```
-
-- Build only the core and `proc_macro` libraries
-
-```bash
-./x.py build --stage 0 library/core library/proc_macro
+./x.py build --stage 0 library/std
 ```
 
 Sometimes you might just want to test if the part you’re working on can
@@ -195,7 +211,7 @@ rustup toolchain link stage2 build/<host-triple>/stage2
 The `<host-triple>` would typically be one of the following:
 
 - Linux: `x86_64-unknown-linux-gnu`
-- Mac: `x86_64-apple-darwin`
+- Mac: `x86_64-apple-darwin` or `aarch64-apple-darwin`
 - Windows: `x86_64-pc-windows-msvc`
 
 Now you can run the `rustc` you built with. If you run with `-vV`, you
@@ -225,7 +241,8 @@ in other sections:
 - Building things:
   - `./x.py build` – builds everything using the stage 1 compiler,
     not just up to `std`
-  - `./x.py build --stage 2` – builds the stage2 compiler
+  - `./x.py build --stage 2` – builds everything with the stage 2 compiler including
+    `rustdoc` (which doesn't take too long)
 - Running tests (see the [section on running tests](../tests/running.html) for
   more details):
   - `./x.py test library/std` – runs the `#[test]` tests from `std`

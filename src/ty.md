@@ -16,7 +16,7 @@ The specific `Ty` we are referring to is [`rustc_middle::ty::Ty`][ty_ty] (and no
 [`rustc_hir::Ty`][hir_ty]). The distinction is important, so we will discuss it first before going
 into the details of `ty::Ty`.
 
-[ty_ty]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/type.Ty.html
+[ty_ty]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/struct.Ty.html
 [hir_ty]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_hir/struct.Ty.html
 
 ## `rustc_hir::Ty` vs `ty::Ty`
@@ -40,7 +40,7 @@ different [`Span`s][span] (locations).
 [span]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_span/struct.Span.html
 
 **Example: `fn foo(x: &u32) -> &u32`** In addition, HIR might have information left out. This type
-`&u32` is incomplete, since in the full rust type there is actually a lifetime, but we didn’t need
+`&u32` is incomplete, since in the full Rust type there is actually a lifetime, but we didn’t need
 to write those lifetimes. There are also some elision rules that insert information. The result may
 look like  `fn foo<'a>(x: &'a u32) -> &'a u32`.
 

@@ -459,8 +459,8 @@ The possible values of [`Applicability`][appl] are:
 
 - `MachineApplicable`: Can be applied mechanically.
 - `HasPlaceholders`: Cannot be applied mechanically because it has placeholder
-  text in the suggestions. For example: ``try adding a type: `let x:
-  <type>` ``.
+  text in the suggestions. For example: ```try adding a type: `let x:
+  <type>` ```.
 - `MaybeIncorrect`: Cannot be applied mechanically because the suggestion may
   or may not be a good one.
 - `Unspecified`: Cannot be applied mechanically because we don't know which
@@ -593,6 +593,20 @@ declare_lint! {
 
 This makes the `ANONYMOUS_PARAMETERS` lint allow-by-default in the 2015 edition
 but warn-by-default in the 2018 edition.
+
+### Feature-gated lints
+
+Lints belonging to a feature should only be usable if the feature is enabled in the
+crate. To support this, lint declarations can contain a feature gate like so:
+
+```rust,ignore
+declare_lint! {
+    pub SOME_LINT_NAME,
+    Warn,
+    "a new and useful, but feature gated lint",
+    @feature_gate = sym::feature_name;
+}
+```
 
 ### Future-incompatible lints
 

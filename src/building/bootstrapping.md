@@ -110,7 +110,7 @@ bootstrapping the compiler.
 When you use the bootstrap system, you'll call it through `x.py`.
 However, most of the code lives in `src/bootstrap`.
 `bootstrap` has a difficult problem: it is written in Rust, but yet it is run
-before the rust compiler is built! To work around this, there are two
+before the Rust compiler is built! To work around this, there are two
 components of bootstrap: the main one written in rust, and `bootstrap.py`.
 `bootstrap.py` is what gets run by `x.py`. It takes care of downloading the
 `stage0` compiler, which will then build the bootstrap binary written in
@@ -218,7 +218,7 @@ Stage N `std` is pretty much necessary for any useful work with the stage N comp
 Without it, you can only compile programs with `#![no_core]` -- not terribly useful!
 
 The reason these need to be different is because they aren't necessarily ABI-compatible:
-there could be a new layout optimizations, changes to MIR, or other changes
+there could be new layout optimizations, changes to MIR, or other changes
 to Rust metadata on nightly that aren't present in beta.
 
 This is also where `--keep-stage 1 library/std` comes into play. Since most

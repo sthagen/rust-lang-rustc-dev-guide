@@ -157,8 +157,8 @@ no changes added to commit (use "git add" and/or "git commit -a")
 These changes are not changes to files: they are changes to submodules (more on
 this [later](#git-submodules)). To get rid of those, run `git submodule update`
 (or run any `x.py` command, which will automatically update the submodules).
-Note that there is (as of <!-- date: 2021-07 --> July 2021) a [bug][#77620] if you use
-worktrees, submodules, and `x.py` in a commit hook.  If you run into an error
+Note that there is (as of <!-- date: 2022-02 --> February 2022) a [bug][#77620] if you use
+worktrees, submodules, and `x.py` in a commit hook. If you run into an error
 like:
 
 ```
@@ -415,8 +415,13 @@ This is because, like any dependency, we want to be able to control which versio
 Submodules allow us to do just that: every submodule is "pinned" to a certain
 commit, which doesn't change unless modified manually. If you use `git checkout <commit>`
 in the `miri` directory and go back to the `rust` directory, you can stage this
-change like any other. This is usually done by the maintainers of the
-project, and looks like [this][miri-update].
+change like any other, e.g. by running `git add src/tools/miri`. (Note that if
+you *don't* stage the change to commit, then you run the risk that running
+`x.py` will just undo your change by switching back to the previous commit when
+it automatically "updates" the submodules.)
+
+This version selection is usually done by the maintainers of the project, and
+looks like [this][miri-update].
 
 Git submodules take some time to get used to, so don't worry if it isn't perfectly
 clear yet. You will rarely have to use them directly and, again, you don't need

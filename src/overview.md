@@ -5,7 +5,7 @@
 This chapter is about the overall process of compiling a program -- how
 everything fits together.
 
-The rust compiler is special in two ways: it does things to your code that
+The Rust compiler is special in two ways: it does things to your code that
 other compilers don't do (e.g. borrow checking) and it has a lot of
 unconventional implementation choices (e.g. queries). We will talk about these
 in turn in this chapter, and in the rest of the guide, we will look at all the
@@ -225,7 +225,7 @@ interned.
 
 ### Queries
 
-The first big implementation choice is the _query_ system. The rust compiler
+The first big implementation choice is the _query_ system. The Rust compiler
 uses a query system which is unlike most textbook compilers, which are
 organized as a series of passes over the code that execute sequentially. The
 compiler does this to make incremental compilation possible -- that is, if the
@@ -289,7 +289,7 @@ on [`ty::Ty`][ty], but for now, we just want to mention that it exists and is th
 
 Also note that the `rustc_middle::ty` module defines the `TyCtxt` struct we mentioned before.
 
-[ty]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/type.Ty.html
+[ty]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/struct.Ty.html
 
 ### Parallelism
 

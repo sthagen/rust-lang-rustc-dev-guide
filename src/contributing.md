@@ -70,12 +70,14 @@ when contributing to Rust under [the git section](./git.md).
 [about-pull-requests]: https://help.github.com/articles/about-pull-requests/
 [development-models]: https://help.github.com/articles/about-collaborative-development-models/
 
+### r?
+
 All pull requests are reviewed by another person. We have a bot,
 [@rust-highfive][rust-highfive], that will automatically assign a random person
-to review your request.
+to review your request based on which files you changed.
 
 If you want to request that a specific person reviews your pull request, you
-can add an `r?` to the pull request description. For example,
+can add an `r?` to the pull request description or in a comment. For example,
 [Steve][steveklabnik] usually reviews documentation changes. So if you were to
 make a documentation change, add
 
@@ -83,6 +85,17 @@ make a documentation change, add
 
 to the end of the pull request description, and [@rust-highfive][rust-highfive] will assign
 [@steveklabnik][steveklabnik] instead of a random person. This is entirely optional.
+
+You can also assign a random reviewer from a specific team by writing `r? rust-lang/groupname`.
+So if you were making a diagnostics change, then you could get a reviewer from the diagnostics
+team by adding:
+
+    r? rust-lang/diagnostics
+
+For a full list of possible `groupname` check the `groups` section at the
+[rust highfive config file](https://github.com/rust-lang/highfive/blob/master/highfive/configs/rust-lang/rust.json).
+
+### CI
 
 In addition to being reviewed by a human, pull requests are automatically tested
 thanks to continuous integration (CI). Basically, every time you open and update
@@ -99,6 +112,8 @@ computational resources each time you push a change. It is also perfectly fine
 (and even encouraged!) to use the CI to test your changes if it can help your
 productivity. In particular, we don't recommend running the full `./x.py test` suite locally,
 since it takes a very long time to execute.
+
+### r+
 
 After someone has reviewed your pull request, they will leave an annotation
 on the pull request with an `r+`. It will look something like this:
@@ -199,7 +214,7 @@ is modified to move the files from the specified directory to the tool repo root
 
 A `subtree pull` takes all changes since the last `subtree pull`
 from the tool repo and adds these commits to the rustc repo along with a merge commit that moves
-the tool changes into the specified directory in the rust repository.
+the tool changes into the specified directory in the Rust repository.
 
 It is recommended that you always do a push first and get that merged to the tool master branch.
 Then, when you do a pull, the merge works without conflicts.
@@ -382,9 +397,9 @@ in the same way as other pull requests.
 [`src/doc`]: https://github.com/rust-lang/rust/tree/master/src/doc
 [`lib.rs`]: https://github.com/rust-lang/rust/blob/master/library/std/src/lib.rs#L1
 
-To find documentation-related issues, sort by the [T-doc label][tdoc].
+To find documentation-related issues, sort by the [A-docs label][adocs].
 
-[tdoc]: https://github.com/rust-lang/rust/issues?q=is%3Aopen%20is%3Aissue%20label%3AT-doc
+[adocs]: https://github.com/rust-lang/rust/issues?q=is%3Aopen%20is%3Aissue%20label%3AA-docs
 
 You can find documentation style guidelines in [RFC 1574][rfc1574].
 
@@ -428,12 +443,12 @@ Just a few things to keep in mind:
     Try to format the date as `<MONTH> <YEAR>` to ease search.
 
   - Additionally, include a machine-readable comment of the form `<!-- date:
-    2021-10 -->` (if the current month is October 2021). We have an automated
+    2022-04 -->` (if the current month is April 2022). We have an automated
     tool that uses these (in `ci/date-check`).
 
-    So, for the month of January 2021, the comment would look like: `As of <!--
-    date: 2021-10 --> October 2021`. Make sure to put the comment *between* `as of`
-    and `October 2021`; see [PR #1066][rdg#1066] for the rationale.
+    So, for the month of April 2022, the comment would look like: `As of <!--
+    date: 2022-04 --> April 2022`. Make sure to put the comment *between* `as of`
+    and `April 2022`; see [PR #1066][rdg#1066] for the rationale.
 
   - A link to a relevant WG, tracking issue, `rustc` rustdoc page, or similar, that may provide
     further explanation for the change process or a way to verify that the information is not
