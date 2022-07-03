@@ -46,6 +46,10 @@ you can write: <!-- date: 2022-04 --><!-- the date comment is for the edition be
         "--message-format=json"
     ],
     "rust-analyzer.rustc.source": "./Cargo.toml",
+    "rust-analyzer.linkedProjects": [
+        "Cargo.toml",
+        "src/bootstrap/Cargo.toml"
+    ]
 }
 ```
 
@@ -56,6 +60,10 @@ in your `.vscode/settings.json` file. This will ask `rust-analyzer` to use
 > setting with the appropriate target triple for your machine. An example of such
 > a triple is `x86_64-unknown-linux-gnu`. An easy way to check your target triple
 > is to run `rustc -vV` and checking the `host` value of its output.
+
+If you have enough free disk space and you would like to be able to run `x.py` commands while
+rust-analyzer runs in the background, you can also add `--build-dir build-rust-analyzer` to the
+`overrideCommand` to avoid x.py locking.
 
 If you're running `coc.nvim`, you can use `:CocLocalConfig` to create a
 `.vim/coc-settings.json` and enter the same settings as above, but replacing
@@ -113,7 +121,7 @@ rustup override set nightly
 
 after [installing a nightly toolchain] with `rustup`. Don't forget to do this for all
 directories you have [setup a worktree for]. You may need to use the pinned
-nightly version from `src/stage0.txt`, but often the normal `nightly` channel
+nightly version from `src/stage0.json`, but often the normal `nightly` channel
 will work.
 
 **Note** see [the section on vscode] for how to configure it with this real rustfmt `x.py` uses,
