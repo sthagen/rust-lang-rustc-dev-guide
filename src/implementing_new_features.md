@@ -28,6 +28,12 @@ get by with only an r+. For example, it is OK to add or modify
 unstable command-line flags or attributes without an FCP for
 compiler development or standard library use, as long as you don't
 expect them to be in wide use in the nightly ecosystem.
+Some teams have lighter weight processes that they use in scenarios
+like this; for example, the compiler team recommends
+filing a Major Change Proposal ([MCP][mcp]) as a lightweight way to
+garner support and feedback without requiring full consensus.
+
+[mcp]: compiler/mcp.md#public-facing-changes-require-rfcbot-fcp
 
 You don't need to have the implementation fully ready for r+ to propose an FCP,
 but it is generally a good idea to have at least a proof
@@ -123,9 +129,9 @@ a new unstable feature:
 2. Pick a name for the feature gate (for RFCs, use the name
    in the RFC).
 
-3. Add a feature gate declaration to `rustc_feature/src/active.rs`
-   in the active `declare_features` block. See [here][add-feature-gate] for
-   detailed instructions.
+3. Add a feature gate declaration to `rustc_feature/src/active.rs` in the active
+   `declare_features` block, and add the feature gate keyword to
+   `rustc_span/src/symbol.rs`. See [here][add-feature-gate] for detailed instructions.
 
 4. Prevent usage of the new feature unless the feature gate is set.
    You can check it in most places in the compiler using the
