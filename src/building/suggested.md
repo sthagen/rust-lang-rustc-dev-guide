@@ -8,8 +8,9 @@ to make your life easier.
 CI will automatically fail your build if it doesn't pass `tidy`, our
 internal tool for ensuring code quality. If you'd like, you can install a
 [Git hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
-that will automatically run `./x.py test tidy --bless` on each push, to ensure
-your code is up to par. If you decide later that this behavior is
+that will automatically run `./x.py test tidy` on each push, to ensure
+your code is up to par. If the hook fails then run `./x.py test tidy --bless`
+and commit the changes. If you decide later that the pre-push behavior is
 undesirable, you can delete the `pre-push` file in `.git/hooks`.
 
 A prebuilt git hook lives at [`src/etc/pre-push.sh`](https://github.com/rust-lang/rust/blob/master/src/etc/pre-push.sh) which can be copied into your `.git/hooks` folder as `pre-push` (without the `.sh` extension!).
@@ -39,6 +40,8 @@ you can write: <!-- date-check: apr 2022 --><!-- the date comment is for the edi
     "rust-analyzer.procMacro.server": "./build/$TARGET_TRIPLE/stage0/libexec/rust-analyzer-proc-macro-srv",
     "rust-analyzer.procMacro.enable": true,
     "rust-analyzer.cargo.buildScripts.enable": true,
+    "rust-analyzer.cargo.buildScripts.invocationLocation": "root",
+    "rust-analyzer.cargo.buildScripts.invocationStrategy": "once",
     "rust-analyzer.cargo.buildScripts.overrideCommand": [
         "python3",
         "x.py",
