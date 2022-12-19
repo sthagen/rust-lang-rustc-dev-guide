@@ -185,7 +185,7 @@ As a developer to this repository, you don't have to treat the following externa
 differently from other crates that are directly in this repo:
 
 * [Clippy](https://github.com/rust-lang/rust-clippy)
-* [Miri](https://github.com/rust-lang/miri)
+* [Miri]
 * [rustfmt](https://github.com/rust-lang/rustfmt)
 * [rust-analyzer](https://github.com/rust-lang/rust-analyzer)
 
@@ -549,3 +549,4 @@ are:
 [ro]: https://www.rustaceans.org/
 [rctd]: tests/intro.md
 [cheatsheet]: https://bors.rust-lang.org/
+[Miri]: https://github.com/rust-lang/miri
