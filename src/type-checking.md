@@ -1,10 +1,12 @@
 # Type checking
 
-The [`rustc_typeck`][typeck] crate contains the source for "type collection"
-and "type checking", as well as a few other bits of related functionality. (It
-draws heavily on the [type inference] and [trait solving].)
+The [`hir_analysis`] crate contains the source for "type collection" as well
+as a bunch of related functionality.
+Checking the bodies of functions is implemented in the [`hir_typeck`] crate.
+These crates draw heavily on the [type inference] and [trait solving].
 
-[typeck]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_hir_analysis/index.html
+[`hir_analysis`]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_hir_analysis/index.html
+[`hir_typeck`]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_hir_typeck/index.html
 [type inference]: ./type-inference.md
 [trait solving]: ./traits/resolution.md
 
