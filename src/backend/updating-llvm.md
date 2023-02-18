@@ -2,7 +2,7 @@
 
 <!-- toc -->
 
-<!-- date-check: Aug 2022 -->
+<!-- date-check: Feb 2023 -->
 There is no formal policy about when to update LLVM or what it can be updated to,
 but a few guidelines are applied:
 
@@ -16,9 +16,9 @@ but a few guidelines are applied:
 
 There are two reasons we would want to update LLVM:
 
-* A bug could have been fixed! Often we find bugs in the compiler and fix
-  them upstream in LLVM. We'll want to pull fixes back to the compiler itself as
-  they're merged upstream.
+* A bug could have been fixed!
+  Note that if we are the ones who fixed such a bug,
+  we prefer to upstream it, then pull it back for use by rustc.
 
 * LLVM itself may have a new release.
 
@@ -172,9 +172,11 @@ so let's go through each in detail.
 Ideally the above instructions are pretty smooth, but here's some caveats to
 keep in mind while going through them:
 
-* LLVM bugs are hard to find, don't hesitate to ask for help! Bisection is
-  definitely your friend here (yes LLVM takes forever to build, yet bisection is
-  still your friend)
+* LLVM bugs are hard to find, don't hesitate to ask for help!
+  Bisection is definitely your friend here
+  (yes LLVM takes forever to build, yet bisection is still your friend).
+  Note that you can make use of [Dev Desktops],
+  which is an initiative to provide the contributors with remote access to powerful hardware.
 * If you've got general questions, [wg-llvm] can help you out.
 * Creating branches is a privileged operation on GitHub, so you'll need someone
   with write access to create the branches for you most likely.
@@ -184,3 +186,4 @@ keep in mind while going through them:
 [llvm/llvm-project repository]: https://github.com/llvm/llvm-project
 [`llvm-wrapper`]: https://github.com/rust-lang/rust/tree/master/compiler/rustc_llvm/llvm-wrapper
 [wg-llvm]: https://rust-lang.zulipchat.com/#narrow/stream/187780-t-compiler.2Fwg-llvm
+[Dev Desktops]: https://forge.rust-lang.org/infra/docs/dev-desktop.html

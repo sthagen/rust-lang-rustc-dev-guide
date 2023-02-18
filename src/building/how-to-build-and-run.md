@@ -1,4 +1,4 @@
-# How to Build and Run the Compiler
+# How to build and run the compiler
 
 The compiler is built using a tool called `x.py`. You will need to
 have Python installed to run it.
@@ -52,7 +52,7 @@ If you have already built `rustc` and you change settings related to LLVM, then 
 execute `rm -rf build` for subsequent configuration changes to take effect. Note that `./x.py
 clean` will not cause a rebuild of LLVM.
 
-## Building the Compiler
+## Building the compiler
 
 Note that building will require a relatively large amount of storage space.
 You may want to have upwards of 10 or 15 gigabytes available to build the compiler.

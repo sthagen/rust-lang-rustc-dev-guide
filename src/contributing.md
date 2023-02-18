@@ -202,7 +202,7 @@ Periodically the changes made to subtree based dependencies need to be synchroni
 repository and the upstream tool repositories.
 
 Subtree synchronizations are typically handled by the respective tool maintainers. Other users
-are welcome to submit synchronization PRs, however, in order to do so you you will need to modify
+are welcome to submit synchronization PRs, however, in order to do so you will need to modify
 your local git installation and follow a very precise set of instructions.
 These instructions are documented, along with several useful tips and tricks, in the
 [syncing subtree changes][clippy-sync-docs] section in Clippy's Contributing guide.
@@ -320,7 +320,7 @@ Here are those same steps in detail:
    merged because CI will be broken. You'll want to write a message on the PR referencing
    your change, and how the PR should be merged once your change makes it into a nightly.
 5. Wait for your PR to merge.
-6. Wait for a nightly
+6. Wait for a nightly.
 7. (optional) Help land your PR on the upstream repository now that your changes are in nightly.
 8. (optional) Send a PR to rust-lang/rust updating the submodule.
 
