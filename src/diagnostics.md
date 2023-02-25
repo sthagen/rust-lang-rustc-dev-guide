@@ -112,10 +112,11 @@ Here are a few examples:
 - Dead code: this is a lint. While the user probably doesn't want dead code in
   their crate, making this a hard error would make refactoring and development
   very painful.
-- [safe_packed_borrows future compatibility warning][safe_packed_borrows]:
-  this is a silencable lint related to safety. It was judged that the making
-  this a hard (fixed) error would cause too much breakage, so instead a
-  warning is emitted that eventually will be turned into a hard error.
+- [future-incompatible lints]:
+  these are silencable lints.
+  It was decided that making them fixed errors would cause too much breakage,
+  so warnings are instead emitted,
+  and will eventually be turned into fixed (hard) errors.
 
 Hard-coded warnings (those using the `span_warn` methods) should be avoided
 for normal code, preferring to use lints instead. Some cases, such as warnings
@@ -124,7 +125,7 @@ with CLI flags, will require the use of hard-coded warnings.
 See the `deny` [lint level](#diagnostic-levels) below for guidelines when to
 use an error-level lint instead of a fixed error.
 
-[safe_packed_borrows]: https://github.com/rust-lang/rust/issues/46043
+[future-incompatible lints]: #future-incompatible-lints
 
 ## Diagnostic output style guide
 
@@ -637,12 +638,12 @@ broader meaning than what rustc exposes to users of the compiler.
 Inside rustc, future-incompatible lints are for signalling to the user that code they have
 written may not compile in the future. In general, future-incompatible code
 exists for two reasons:
-* the user has written unsound code that the compiler mistakenly accepted. While
+* The user has written unsound code that the compiler mistakenly accepted. While
 it is within Rust's backwards compatibility guarantees to fix the soundness hole
 (breaking the user's code), the lint is there to warn the user that this will happen
 in some upcoming version of rustc *regardless of which edition the code uses*. This is the
 meaning that rustc exclusively exposes to users as "future incompatible".
-* the user has written code that will either no longer compiler *or* will change
+* The user has written code that will either no longer compiler *or* will change
 meaning in an upcoming *edition*. These are often called "edition lints" and can be
 typically seen in the various "edition compatibility" lint groups (e.g., `rust_2021_compatibility`)
 that are used to lint against code that will break if the user updates the crate's edition.
@@ -665,7 +666,7 @@ declare_lint! {
 Notice the `reason` field which describes why the future incompatible change is happening.
 This will change the diagnostic message the user receives as well as determine which
 lint groups the lint is added to. In the example above, the lint is an "edition lint"
-(since it's "reason" is `EditionError`) signifying to the user that the use of anonymous
+(since its "reason" is `EditionError`), signifying to the user that the use of anonymous
 parameters will no longer compile in Rust 2018 and beyond.
 
 Inside [LintStore::register_lints][fi-lint-groupings], lints with `future_incompatible`
