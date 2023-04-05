@@ -1,31 +1,6 @@
-# Contributing to Rust
-
-Thank you for your interest in contributing to Rust! There are many ways to
-contribute, and we appreciate all of them.
+# Contribution Procedures
 
 <!-- toc -->
-
-If you have questions, please make a post on [internals.rust-lang.org][internals] or
-hop on the [Rust Discord server][rust-discord] or [Rust Zulip server][rust-zulip].
-
-As a reminder, all contributors are expected to follow our [Code of Conduct][coc].
-
-If this is your first time contributing, the [Getting Started] and
-[walkthrough] chapters can give you a good example of how a typical
-contribution would go.
-
-[internals]: https://internals.rust-lang.org
-[rust-discord]: http://discord.gg/rust-lang
-[rust-zulip]: https://rust-lang.zulipchat.com
-[coc]: https://www.rust-lang.org/conduct.html
-[walkthrough]: ./walkthrough.md
-[Getting Started]: ./getting-started.md
-
-## Feature Requests
-
-Feature requests need to go through a process to be approved by the relevant
-teams. Usually this requires a Final Comment Period (FCP) or even a Request for
-Comments (RFC). See [Getting Started] for more information about these processes.
 
 ## Bug Reports
 
@@ -57,6 +32,80 @@ Trait in return position**.
 Opening an issue is as easy as following [this
 link](https://github.com/rust-lang/rust/issues/new/choose) and filling out the fields
 in the appropriate provided template.
+
+## Bug Fixes or "Normal" code changes
+
+For most PRs, no special procedures are needed. You can just [open a PR][prs], and it
+will be reviewed, approved, and merged. This includes most bug fixes,
+refactorings, and other user-invisible changes. The next few sections talk
+about exceptions to this rule.
+
+Also, note that it is perfectly acceptable to open WIP PRs or GitHub [Draft
+PRs][draft]. Some people prefer to do this so they can get feedback along the
+way or share their code with a collaborator. Others do this so they can utilize
+the CI to build and test their PR (e.g. if you are developing on a laptop).
+
+[prs]: #pull-requests
+[draft]: https://github.blog/2019-02-14-introducing-draft-pull-requests/
+
+## New Features
+
+Rust has strong backwards-compatibility guarantees. Thus, new features can't
+just be implemented directly in stable Rust. Instead, we have 3 release
+channels: stable, beta, and nightly.
+
+- **Stable**: this is the latest stable release for general usage.
+- **Beta**: this is the next release (will be stable within 6 weeks).
+- **Nightly**: follows the `master` branch of the repo. This is the only
+  channel where unstable, incomplete, or experimental features are usable with
+  feature gates.
+
+See [this chapter on implementing new features](./implementing_new_features.md) for more
+information.
+
+### Breaking Changes
+
+Breaking changes have a [dedicated section][breaking-changes] in the dev-guide.
+
+[breaking-changes]: ./bug-fix-procedure.md
+
+### Major Changes
+
+The compiler team has a special process for large changes, whether or not they
+cause breakage. This process is called a Major Change Proposal (MCP). MCP is a
+relatively lightweight mechanism for getting feedback on large changes to the
+compiler (as opposed to a full RFC or a design meeting with the team).
+
+Example of things that might require MCPs include major refactorings, changes
+to important types, or important changes to how the compiler does something, or
+smaller user-facing changes.
+
+**When in doubt, ask on [zulip][z]. It would be a shame to put a lot of work
+into a PR that ends up not getting merged!** [See this document][mcpinfo] for
+more info on MCPs.
+
+[mcpinfo]: https://forge.rust-lang.org/compiler/mcp.html
+[z]: https://rust-lang.zulipchat.com/#narrow/stream/131828-t-compiler
+
+### Performance
+
+Compiler performance is important. We have put a lot of effort over the last
+few years into [gradually improving it][perfdash].
+
+[perfdash]: https://perf.rust-lang.org/dashboard.html
+
+If you suspect that your change may cause a performance regression (or
+improvement), you can request a "perf run" (your reviewer may also request one
+before approving). This is yet another bot that will compile a collection of
+benchmarks on a compiler with your changes. The numbers are reported
+[here][perf], and you can see a comparison of your changes against the latest
+master.
+
+For an introduction to the performance of Rust code in general
+which would also be useful in rustc development, see [The Rust Performance Book].
+
+[perf]: https://perf.rust-lang.org
+[The Rust Performance Book]: https://nnethercote.github.io/perf-book/
 
 ## Pull Requests
 
@@ -96,6 +145,8 @@ For a full list of possible `groupname` check the `adhoc_groups` section at the
 or the list of teams in the [rust-lang teams
 database](https://github.com/rust-lang/team/tree/master/teams).
 
+### Waiting for reviews
+
 > NOTE
 >
 > Pull request reviewers are often working at capacity,
@@ -113,6 +164,23 @@ database](https://github.com/rust-lang/team/tree/master/teams).
 >   the author is ready for a review,
 >   and this PR will be queued again in the reviewer's queue.
 
+Please note that the reviewers are humans, who for the most part work on `rustc`
+in their free time. This means that they can take some time to respond and review
+your PR. It also means that reviewers can miss some PRs that are assigned to them.
+
+To try to move PRs forward, the Triage WG regularly goes through all PRs that
+are waiting for review and haven't been discussed for at least 2 weeks. If you
+don't get a review within 2 weeks, feel free to ask the Triage WG on
+Zulip ([#t-release/triage]). They have knowledge of when to ping, who might be
+on vacation, etc.
+
+The reviewer may request some changes using the GitHub code review interface.
+They may also request special procedures (such as a [crater] run; [see
+below][break]) for some PRs.
+
+[r?]: https://github.com/rust-lang/rust/pull/78133#issuecomment-712692371
+[#t-release/triage]: https://rust-lang.zulipchat.com/#narrow/stream/242269-t-release.2Ftriage
+[break]: #breaking-changes
 ### CI
 
 In addition to being reviewed by a human, pull requests are automatically tested
@@ -151,6 +219,8 @@ The additional `rollup` tells [@bors] that this change should always be "rolled 
 Changes that are rolled up are tested and merged alongside other PRs, to
 speed the process up. Typically only small changes that are expected not to conflict
 with one another are marked as "always roll up".
+
+Be patient; this can take a while and the queue can sometimes be long. PRs are never merged by hand.
 
 [@rustbot]: https://github.com/rustbot
 [@bors]: https://github.com/bors
@@ -196,151 +266,9 @@ the issue in question.
 [labeling]: ./rustbot.md#issue-relabeling
 [closing-keywords]: https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue
 
-### External Dependencies (subtree)
+## External Dependencies
 
-As a developer to this repository, you don't have to treat the following external projects
-differently from other crates that are directly in this repo:
-
-* [Clippy](https://github.com/rust-lang/rust-clippy)
-* [Miri]
-* [rustfmt](https://github.com/rust-lang/rustfmt)
-* [rust-analyzer](https://github.com/rust-lang/rust-analyzer)
-
-In contrast to `submodule` dependencies
-(see below for those), the `subtree` dependencies are just regular files and directories which can
-be updated in tree. However, if possible, enhancements, bug fixes, etc. specific
-to these tools should be filed against the tools directly in their respective
-upstream repositories. The exception is that when rustc changes are required to
-implement a new tool feature or test, that should happen in one collective rustc PR.
-
-#### Synchronizing a subtree
-
-Periodically the changes made to subtree based dependencies need to be synchronized between this
-repository and the upstream tool repositories.
-
-Subtree synchronizations are typically handled by the respective tool maintainers. Other users
-are welcome to submit synchronization PRs, however, in order to do so you will need to modify
-your local git installation and follow a very precise set of instructions.
-These instructions are documented, along with several useful tips and tricks, in the
-[syncing subtree changes][clippy-sync-docs] section in Clippy's Contributing guide.
-The instructions are applicable for use with any subtree based tool, just be sure to
-use the correct corresponding subtree directory and remote repository.
-
-The synchronization process goes in two directions: `subtree push` and `subtree pull`.
-
-A `subtree push` takes all the changes that happened to the copy in this repo and creates commits
-on the remote repo that match the local changes. Every local
-commit that touched the subtree causes a commit on the remote repo, but
-is modified to move the files from the specified directory to the tool repo root.
-
-A `subtree pull` takes all changes since the last `subtree pull`
-from the tool repo and adds these commits to the rustc repo along with a merge commit that moves
-the tool changes into the specified directory in the Rust repository.
-
-It is recommended that you always do a push first and get that merged to the tool master branch.
-Then, when you do a pull, the merge works without conflicts.
-While it's definitely possible to resolve conflicts during a pull, you may have to redo the conflict
-resolution if your PR doesn't get merged fast enough and there are new conflicts. Do not try to
-rebase the result of a `git subtree pull`, rebasing merge commits is a bad idea in general.
-
-You always need to specify the `-P` prefix to the subtree directory and the corresponding remote
-repository. If you specify the wrong directory or repository
-you'll get very fun merges that try to push the wrong directory to the wrong remote repository.
-Luckily you can just abort this without any consequences by throwing away either the pulled commits
-in rustc or the pushed branch on the remote and try again. It is usually fairly obvious
-that this is happening because you suddenly get thousands of commits that want to be synchronized.
-
-[clippy-sync-docs]: https://doc.rust-lang.org/nightly/clippy/development/infrastructure/sync.html
-
-#### Creating a new subtree dependency
-
-If you want to create a new subtree dependency from an existing repository, call (from this
-repository's root directory!)
-
-```
-git subtree add -P src/tools/clippy https://github.com/rust-lang/rust-clippy.git master
-```
-
-This will create a new commit, which you may not rebase under any circumstances! Delete the commit
-and redo the operation if you need to rebase.
-
-Now you're done, the `src/tools/clippy` directory behaves as if Clippy were
-part of the rustc monorepo, so no one but you (or others that synchronize
-subtrees) actually needs to use `git subtree`.
-
-
-### External Dependencies (submodules)
-
-Building Rust will also use external git repositories tracked using [git
-submodules]. The complete list may be found in the [`.gitmodules`] file. Some
-of these projects are required (like `stdarch` for the standard library) and
-some of them are optional (like [Miri]).
-
-Usage of submodules is discussed more in the [Using Git
-chapter](git.md#git-submodules).
-
-Some of the submodules are allowed to be in a "broken" state where they
-either don't build or their tests don't pass, e.g. the documentation books
-like [The Rust Reference]. Maintainers of these projects will be notified
-when the project is in a broken state, and they should fix them as soon
-as possible. The current status is tracked on the [toolstate website].
-More information may be found on the Forge [Toolstate chapter].
-
-Breakage is not allowed in the beta and stable channels, and must be addressed
-before the PR is merged. They are also not allowed to be broken on master in
-the week leading up to the beta cut.
-
-[git submodules]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
-[`.gitmodules`]: https://github.com/rust-lang/rust/blob/master/.gitmodules
-[The Rust Reference]: https://github.com/rust-lang/reference/
-[toolstate website]: https://rust-lang-nursery.github.io/rust-toolstate/
-[Toolstate chapter]: https://forge.rust-lang.org/infra/toolstate.html
-
-#### Breaking Tools Built With The Compiler
-
-Rust's build system builds a number of tools that make use of the internals of
-the compiler and that are hosted in a separate repository, and included in Rust
-via git submodules (such as [Miri]). If these tools break because of your
-changes, you may run into a sort of "chicken and egg" problem. These tools rely
-on the latest compiler to be built so you can't update them (in their own
-repositories) to reflect your changes to the compiler until those changes are
-merged into the compiler. At the same time, you can't get your changes merged
-into the compiler because the rust-lang/rust build won't pass until those tools
-build and pass their tests.
-
-Luckily, a feature was
-[added to Rust's build](https://github.com/rust-lang/rust/issues/45861) to make
-all of this easy to handle. The idea is that we allow these tools to be
-"broken", so that the rust-lang/rust build passes without trying to build them,
-then land the change in the compiler, and go update the tools that you
-broke. Some tools will require waiting for a nightly release before this can
-happen, while others use the builds uploaded after each bors merge and thus can
-be updated immediately (check the tool's documentation for details). Once you're
-done and the tools are working again, you go back in the compiler and update the
-tools so they can be distributed again.
-
-This should avoid a bunch of synchronization dances and is also much easier on contributors as
-there's no need to block on tools changes going upstream.
-
-Here are those same steps in detail:
-
-1. (optional) First, if it doesn't exist already, create a `config.toml` by copying
-   `config.example.toml` in the root directory of the Rust repository.
-   Set `submodules = false` in the `[build]` section. This will prevent `x.py`
-   from resetting to the original branch after you make your changes. If you
-   need to [update any submodules to their latest versions](#updating-submodules),
-   see the section of this file about that for more information.
-2. (optional) Run `./x.py test src/tools/cargo` (substituting the submodule
-   that broke for `cargo`). Fix any errors in the submodule (and possibly others).
-3. (optional) Make commits for your changes and send them to upstream repositories as a PR.
-4. (optional) Maintainers of these submodules will **not** merge the PR. The PR can't be
-   merged because CI will be broken. You'll want to write a message on the PR referencing
-   your change, and how the PR should be merged once your change makes it into a nightly.
-5. Wait for your PR to merge.
-6. Wait for a nightly.
-7. (optional) Help land your PR on the upstream repository now that your changes are in nightly.
-8. (optional) Send a PR to rust-lang/rust updating the submodule.
-
+This section has moved to ["Using External Repositories"](./external-repos.md).
 
 ## Writing Documentation
 
@@ -542,64 +470,8 @@ This is used for [RFCs], issues, and pull requests.
 [rfcbot]: https://github.com/anp/rfcbot-rs/
 [RFCs]: https://github.com/rust-lang/rfcs
 
-## Out-of-tree Contributions
-
-There are a number of other ways to contribute to Rust that don't deal with
-rust-lang/rust:
-
-* Answer questions in the _Get Help!_ channels on the [Rust Discord
-  server][rust-discord], on [users.rust-lang.org][users], or on
-  [StackOverflow][so].
-* Participate in the [RFC process](https://github.com/rust-lang/rfcs).
-* Find a [requested community library][community-library], build it, and publish
-  it to [Crates.io](http://crates.io). Easier said than done, but very, very
-  valuable!
-
-[rust-discord]: https://discord.gg/rust-lang
-[users]: https://users.rust-lang.org/
-[so]: http://stackoverflow.com/questions/tagged/rust
-[community-library]: https://github.com/rust-lang/rfcs/labels/A-community-library
-
 ## Helpful Links and Information
 
-For people new to Rust, and just starting to contribute, or even for
-more seasoned developers, some useful places to look for information
-are:
+This section has moved to the ["About this guide"][more-links] chapter.
 
-* This guide contains information about how various parts of the
-  compiler work and how to contribute to the compiler
-* [Rust Forge][rustforge] contains additional documentation, including
-  write-ups of how to achieve common tasks
-* The [Rust Internals forum][rif], a place to ask questions and
-  discuss Rust's internals
-* The [generated documentation for Rust's compiler][gdfrustc]
-* The [Rust reference][rr], even though it doesn't specifically talk about
-  Rust's internals, is a great resource nonetheless
-* Although out of date, [Tom Lee's great blog article][tlgba] is very helpful
-* [rustaceans.org][ro] is helpful, but mostly dedicated to IRC
-* The [Rust Compiler Testing Docs][rctd]
-* For [@bors], [this cheat sheet][cheatsheet] is helpful
-* Google is always helpful when programming.
-  You can [search all Rust documentation][gsearchdocs] (the standard library,
-  the compiler, the books, the references, and the guides) to quickly find
-  information about the language and compiler.
-* You can also use Rustdoc's built-in search feature to find documentation on
-  types and functions within the crates you're looking at. You can also search
-  by type signature! For example, searching for `* -> vec` should find all
-  functions that return a `Vec<T>`.
-  _Hint:_ Find more tips and keyboard shortcuts by typing `?` on any Rustdoc
-  page!
-* Don't be afraid to ask! The Rust community is friendly and helpful.
-
-[rustc dev guide]: about-this-guide.md
-[gdfrustc]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/
-[gsearchdocs]: https://www.google.com/search?q=site:doc.rust-lang.org+your+query+here
-[stddocs]: https://doc.rust-lang.org/std
-[rif]: http://internals.rust-lang.org
-[rr]: https://doc.rust-lang.org/book/README.html
-[rustforge]: https://forge.rust-lang.org/
-[tlgba]: https://tomlee.co/2014/04/a-more-detailed-tour-of-the-rust-compiler/
-[ro]: https://www.rustaceans.org/
-[rctd]: tests/intro.md
-[cheatsheet]: https://bors.rust-lang.org/
-[Miri]: https://github.com/rust-lang/miri
+[more-links]: ./about-this-guide.md#other-places-to-find-information

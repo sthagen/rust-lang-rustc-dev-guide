@@ -35,17 +35,18 @@
 
 # Contributing to Rust
 
-- [Introduction](./contributing.md)
+- [Contribution Procedures](./contributing.md)
 - [About the compiler team](./compiler-team.md)
 - [Using Git](./git.md)
 - [Mastering @rustbot](./rustbot.md)
 - [Walkthrough: a typical contribution](./walkthrough.md)
-- [Bug Fix Procedure](./bug-fix-procedure.md)
+- [Procedures for Breaking Changes](./bug-fix-procedure.md)
 - [Implementing new features](./implementing_new_features.md)
 - [Stability attributes](./stability.md)
 - [Stabilizing Features](./stabilization_guide.md)
 - [Feature Gates](./feature-gates.md)
 - [Coding conventions](./conventions.md)
+- [Using external repositories](./external-repos.md)
 - [Fuzzing](./fuzzing.md)
 - [Notification groups](notification-groups/about.md)
     - [ARM](notification-groups/arm.md)
