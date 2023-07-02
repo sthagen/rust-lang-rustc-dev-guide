@@ -181,6 +181,8 @@ below][break]) for some PRs.
 [r?]: https://github.com/rust-lang/rust/pull/78133#issuecomment-712692371
 [#t-release/triage]: https://rust-lang.zulipchat.com/#narrow/stream/242269-t-release.2Ftriage
 [break]: #breaking-changes
+[crater]: tests/crater.md
+
 ### CI
 
 In addition to being reviewed by a human, pull requests are automatically tested
@@ -198,7 +200,7 @@ of the status of a particular pull request.
 Rust has plenty of CI capacity, and you should never have to worry about wasting
 computational resources each time you push a change. It is also perfectly fine
 (and even encouraged!) to use the CI to test your changes if it can help your
-productivity. In particular, we don't recommend running the full `./x.py test` suite locally,
+productivity. In particular, we don't recommend running the full `./x test` suite locally,
 since it takes a very long time to execute.
 
 ### r+
@@ -239,7 +241,7 @@ branch, `master` will be the right choice (it's also the default).
 
 Make sure your pull request is in compliance with Rust's style guidelines by running
 
-    $ ./x.py test tidy --bless
+    $ ./x test tidy --bless
 
 We recommend to make this check before every pull request (and every new commit
 in a pull request); you can add [git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)

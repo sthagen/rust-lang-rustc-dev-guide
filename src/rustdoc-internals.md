@@ -173,6 +173,8 @@ running the Markdown parser. There's also a function in here
 (`find_testable_code`) that specifically scans for Rust code blocks so the
 test-runner code can find all the doctests in the crate.
 
+[Askama]: https://docs.rs/askama/latest/askama/
+
 ### From soup to nuts
 
 (alternate title: ["An unbroken thread that stretches from those first `Cell`s
@@ -279,7 +281,7 @@ server. To test these features locally, you can run a local HTTP server, like
 this:
 
 ```bash
-$ ./x.py doc library
+$ ./x doc library
 # The documentation has been generated into `build/[YOUR ARCH]/doc`.
 $ python3 -m http.server -d build/[YOUR ARCH]/doc
 ```

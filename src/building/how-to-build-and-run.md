@@ -57,7 +57,75 @@ if you want to learn more about `x.py`, [read this chapter][bootstrap].
 
 [bootstrap]: ./bootstrapping.md
 
-### Running `x.py` slightly more conveniently
+Also, using `x` rather than `x.py` is recommended as:
+
+> `./x` is the most likely to work on every system (on Unix it runs the shell script
+> that does python version detection, on Windows it will probably run the
+> powershell script - certainly less likely to break than `./x.py` which often just
+> opens the file in an editor).[^1]
+
+(You can find the platform related scripts around the `x.py`, like `x.ps1`)
+
+Notice that this is not absolute, for instance, using Nushell in VSCode on Win10,
+typing `x` or `./x` still open the `x.py` in editor rather invoke the program :)
+
+In the rest of documents, we use `x` to represent the straightly usage of `x.py`, which
+means the following command:
+
+```bash
+./x check
+```
+
+could be replaced by:
+
+```bash
+./x.py check
+```
+
+### Running `x.py`
+
+The `x.py` command can be run directly on most Unix systems in the following format:
+
+```sh
+./x <subcommand> [flags]
+```
+
+This is how the documentation and examples assume you are running `x.py`.
+Some alternative ways are:
+
+```sh
+# On a Unix shell if you don't have the necessary `python3` command
+./x <subcommand> [flags]
+
+# In Windows Powershell (if powershell is configured to run scripts)
+./x <subcommand> [flags]
+./x.ps1 <subcommand> [flags]
+
+# On the Windows Command Prompt (if .py files are configured to run Python)
+x.py <subcommand> [flags]
+
+# You can also run Python yourself, e.g.:
+python x.py <subcommand> [flags]
+```
+
+On Windows, the Powershell commands may give you an error that looks like this:
+```
+PS C:\Users\vboxuser\rust> ./x
+./x : File C:\Users\vboxuser\rust\x.ps1 cannot be loaded because running scripts is disabled on this system. For more
+information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170.
+At line:1 char:1
++ ./x
++ ~~~
+    + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+```
+
+You can avoid this error by allowing powershell to run local scripts:
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+#### Running `x.py` slightly more conveniently
 
 There is a binary that wraps `x.py` called `x` in `src/tools/x`. All it does is
 run `x.py`, but it can be installed system-wide and run from any subdirectory
@@ -65,9 +133,14 @@ of a checkout. It also looks up the appropriate version of `python` to use.
 
 You can install it with `cargo install --path src/tools/x`.
 
+To clarify that this is another global installed binary util, which is
+similar to the fromer `x` declared in section [What is `x.py`](#what-is-xpy) but
+it works as an independent process to execute the `x.py` rather than calling the 
+shell to run the platform related scripts.
+
 ## Create a `config.toml`
 
-To start, run `./x.py setup` and select the `compiler` defaults. This will do some initialization
+To start, run `./x setup` and select the `compiler` defaults. This will do some initialization
 and create a `config.toml` for you with reasonable defaults. If you use a different default (which
 you'll likely want to do if you want to contribute to an area of rust other than the compiler, such
 as rustdoc), make sure to read information about that default (located in `src/bootstrap/defaults`)
@@ -77,35 +150,35 @@ Alternatively, you can write `config.toml` by hand. See `config.example.toml` fo
 settings and explanations of them. See `src/bootstrap/defaults` for common settings to change.
 
 If you have already built `rustc` and you change settings related to LLVM, then you may have to
-execute `rm -rf build` for subsequent configuration changes to take effect. Note that `./x.py
+execute `rm -rf build` for subsequent configuration changes to take effect. Note that `./x
 clean` will not cause a rebuild of LLVM.
 
-## Common `x.py` commands
+## Common `x` commands
 
-Here are the basic invocations of the `x.py` commands most commonly used when
+Here are the basic invocations of the `x` commands most commonly used when
 working on `rustc`, `std`, `rustdoc`, and other tools.
 
-| Command | When to use it |
-| --- | --- |
-| `./x.py check` | Quick check to see if most things compile; [rust-analyzer can run this automatically for you][rust-analyzer] |
-| `./x.py build` | Builds `rustc`, `std`, and `rustdoc` |
-| `./x.py test` | Runs all tests |
-| `./x.py fmt` | Formats all code |
+| Command     | When to use it                                                                                               |
+| ----------- | ------------------------------------------------------------------------------------------------------------ |
+| `./x check` | Quick check to see if most things compile; [rust-analyzer can run this automatically for you][rust-analyzer] |
+| `./x build` | Builds `rustc`, `std`, and `rustdoc`                                                                         |
+| `./x test`  | Runs all tests                                                                                               |
+| `./x fmt`   | Formats all code                                                                                             |
 
 As written, these commands are reasonable starting points. However, there are
 additional options and arguments for each of them that are worth learning for
-serious development work. In particular, `./x.py build` and `./x.py test`
+serious development work. In particular, `./x build` and `./x test`
 provide many ways to compile or test a subset of the code, which can save a lot
 of time.
 
-Also, note that `x.py` supports all kinds of path suffixes for `compiler`, `library`,
-and `src/tools` directories. So, you can simply run `x.py test tidy` instead of
-`x.py test src/tools/tidy`. Or, `x.py build std` instead of `x.py build library/std`.
+Also, note that `x` supports all kinds of path suffixes for `compiler`, `library`,
+and `src/tools` directories. So, you can simply run `x test tidy` instead of
+`x test src/tools/tidy`. Or, `x build std` instead of `x build library/std`.
 
 [rust-analyzer]: suggested.html#configuring-rust-analyzer-for-rustc
 
-See the chapters on [building](how-to-build-and-run),
-[testing](../tests/intro), and [rustdoc](../rustdoc) for more details.
+See the chapters on
+[testing](../tests/running.md) and [rustdoc](../rustdoc.md) for more details.
 
 ### Building the compiler
 
@@ -113,11 +186,11 @@ Note that building will require a relatively large amount of storage space.
 You may want to have upwards of 10 or 15 gigabytes available to build the compiler.
 
 Once you've created a `config.toml`, you are now ready to run
-`x.py`. There are a lot of options here, but let's start with what is
+`x`. There are a lot of options here, but let's start with what is
 probably the best "go to" command for building a local compiler:
 
 ```bash
-./x.py build library
+./x build library
 ```
 
 This may *look* like it only builds the standard library, but that is not the case.
@@ -140,10 +213,10 @@ see [the section on avoiding rebuilds for std][keep-stage].
 
 Sometimes you don't need a full build. When doing some kind of
 "type-based refactoring", like renaming a method, or changing the
-signature of some function, you can use `./x.py check` instead for a much faster build.
+signature of some function, you can use `./x check` instead for a much faster build.
 
 Note that this whole command just gives you a subset of the full `rustc`
-build. The **full** `rustc` build (what you get with `./x.py build
+build. The **full** `rustc` build (what you get with `./x build
 --stage 2 compiler/rustc`) has quite a few more steps:
 
 - Build `rustc` with the stage1 compiler.
@@ -160,10 +233,10 @@ the compiler unless you are planning to use a recently added nightly feature.
 Instead, you can just build using the bootstrap compiler.
 
 ```bash
-./x.py build --stage 0 library
+./x build --stage 0 library
 ```
 
-If you choose the `library` profile when running `x.py setup`, you can omit `--stage 0` (it's the
+If you choose the `library` profile when running `x setup`, you can omit `--stage 0` (it's the
 default).
 
 ## Creating a rustup toolchain
@@ -198,7 +271,7 @@ LLVM version: 11.0
 ```
 
 The rustup toolchain points to the specified toolchain compiled in your `build` directory,
-so the rustup toolchain will be updated whenever `x.py build` or `x.py test` are run for
+so the rustup toolchain will be updated whenever `x build` or `x test` are run for
 that toolchain/stage.
 
 **Note:** the toolchain we've built does not include `cargo`.  In this case, `rustup` will
@@ -213,25 +286,25 @@ custom toolchain for a project (e.g. via `rustup override set stage1`) you may
 want to build this component:
 
 ```bash
-./x.py build proc-macro-srv-cli
+./x build proc-macro-srv-cli
 ```
 
 ## Building targets for cross-compilation
 
 To produce a compiler that can cross-compile for other targets,
-pass any number of `target` flags to `x.py build`.
+pass any number of `target` flags to `x build`.
 For example, if your host platform is `x86_64-unknown-linux-gnu`
 and your cross-compilation target is `wasm32-wasi`, you can build with:
 
 ```bash
-./x.py build --target x86_64-unknown-linux-gnu --target wasm32-wasi
+./x build --target x86_64-unknown-linux-gnu --target wasm32-wasi
 ```
 
 Note that if you want the resulting compiler to be able to build crates that
 involve proc macros or build scripts, you must be sure to explicitly build target support for the
 host platform (in this case, `x86_64-unknown-linux-gnu`).
 
-If you want to always build for other targets without needing to pass flags to `x.py build`,
+If you want to always build for other targets without needing to pass flags to `x build`,
 you can configure this in the `[build]` section of your `config.toml` like so:
 
 ```toml
@@ -260,24 +333,24 @@ then once you have built your compiler you will be able to use it to cross-compi
 cargo +stage1 build --target wasm32-wasi
 ```
 
-## Other `x.py` commands
+## Other `x` commands
 
-Here are a few other useful `x.py` commands. We'll cover some of them in detail
+Here are a few other useful `x` commands. We'll cover some of them in detail
 in other sections:
 
 - Building things:
-  - `./x.py build` – builds everything using the stage 1 compiler,
+  - `./x build` – builds everything using the stage 1 compiler,
     not just up to `std`
-  - `./x.py build --stage 2` – builds everything with the stage 2 compiler including
+  - `./x build --stage 2` – builds everything with the stage 2 compiler including
     `rustdoc`
 - Running tests (see the [section on running tests](../tests/running.html) for
   more details):
-  - `./x.py test library/std` – runs the unit tests and integration tests from `std`
-  - `./x.py test tests/ui` – runs the `ui` test suite
-  - `./x.py test tests/ui/const-generics` - runs all the tests in
-  the `const-generics/` subdirectory of the `ui` test suite
-  - `./x.py test tests/ui/const-generics/const-types.rs` - runs
-  the single test `const-types.rs` from the `ui` test suite
+  - `./x test library/std` – runs the unit tests and integration tests from `std`
+  - `./x test tests/ui` – runs the `ui` test suite
+  - `./x test tests/ui/const-generics` - runs all the tests in
+    the `const-generics/` subdirectory of the `ui` test suite
+  - `./x test tests/ui/const-generics/const-types.rs` - runs
+    the single test `const-types.rs` from the `ui` test suite
 
 ### Cleaning out build directories
 
@@ -287,8 +360,10 @@ you should file a bug as to what is going wrong. If you do need to clean
 everything up then you only need to run one command!
 
 ```bash
-./x.py clean
+./x clean
 ```
 
 `rm -rf build` works too, but then you have to rebuild LLVM, which can take
 a long time even on fast computers.
+
+[^1]: issue[#1707](https://github.com/rust-lang/rustc-dev-guide/issues/1707)

@@ -330,7 +330,7 @@ set a baseline for optimizations:
 
 The test should be annotated with `// EMIT_MIR` comments that specify files that
 will contain the expected MIR output.
-You can use `x.py test --bless` to create the initial expected files.
+You can use `x test --bless` to create the initial expected files.
 
 There are several forms the `EMIT_MIR` comment can take:
 
@@ -363,7 +363,7 @@ your test, causing separate files to be generated for 32bit and 64bit systems.
 [`tests/mir-opt`]: https://github.com/rust-lang/rust/tree/master/tests/mir-opt
 
 
-### Run-make tests
+### `run-make` tests
 
 The tests in [`tests/run-make`] are general-purpose tests using Makefiles
 which provide the ultimate in flexibility.
@@ -371,8 +371,8 @@ These should be used as a last resort.
 If possible, you should use one of the other test suites.
 If there is some minor feature missing which you need for your test,
 consider extending compiletest to add a header command for what you need.
-However, sometimes just running a bunch of commands is really what you
-need, `run-make` is here to the rescue!
+However, if running a bunch of commands is really what you need,
+`run-make` is here to the rescue!
 
 Each test should be in a separate directory with a `Makefile` indicating the
 commands to run.
@@ -380,7 +380,7 @@ There is a [`tools.mk`] Makefile which you can include which provides a bunch of
 utilities to make it easier to run commands and compare outputs.
 Take a look at some of the other tests for some examples on how to get started.
 
-[`tools.mk`]: https://github.com/rust-lang/rust/blob/master/tests/run-make-fulldeps/tools.mk
+[`tools.mk`]: https://github.com/rust-lang/rust/blob/master/tests/run-make/tools.mk
 [`tests/run-make`]: https://github.com/rust-lang/rust/tree/master/tests/run-make
 
 
@@ -503,10 +503,9 @@ currently only apply to the test as a whole, not to particular
 revisions. The only headers that are intended to really work when
 customized to a revision are error patterns and compiler flags.
 
-
 ## Compare modes
 
-Compiletest can be run in different modes, called *compare modes*, which can
+Compiletest can be run in different modes, called _compare modes_, which can
 be used to compare the behavior of all tests with different compiler flags
 enabled.
 This can help highlight what differences might appear with certain flags, and
@@ -516,7 +515,7 @@ To run the tests in a different mode, you need to pass the `--compare-mode`
 CLI flag:
 
 ```bash
-./x.py test tests/ui --compare-mode=chalk
+./x test tests/ui --compare-mode=chalk
 ```
 
 The possible compare modes are:
@@ -537,5 +536,5 @@ following settings:
   enabling split-DWARF.
 
 Note that compare modes are separate to [revisions](#revisions).
-All revisions are tested when running `./x.py test tests/ui`, however
+All revisions are tested when running `./x test tests/ui`, however
 compare-modes must be manually run individually via the `--compare-mode` flag.

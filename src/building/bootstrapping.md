@@ -96,7 +96,7 @@ However, it takes a very long time to build
 because one must first build the new compiler with an older compiler
 and then use that to build the new compiler with itself.
 For development, you usually only want the `stage1` compiler,
-which you can build with `./x.py build library`.
+which you can build with `./x build library`.
 See [Building the compiler](./how-to-build-and-run.html#building-the-compiler).
 
 ### Stage 3: the same-result test
@@ -107,7 +107,7 @@ to be identical to before, unless something has broken.
 
 ### Building the stages
 
-`x.py` tries to be helpful and pick the stage you most likely meant for each subcommand.
+`x` tries to be helpful and pick the stage you most likely meant for each subcommand.
 These defaults are as follows:
 
 - `check`: `--stage 0`
@@ -152,7 +152,7 @@ bootstrapping the compiler.
 
 This is a detailed look into the separate bootstrap stages.
 
-The convention `x.py` uses is that:
+The convention `x` uses is that:
 
 - A `--stage N` flag means to run the stage N compiler (`stageN/rustc`).
 - A "stage N artifact" is a build artifact that is _produced_ by the stage N compiler.
@@ -161,7 +161,7 @@ The convention `x.py` uses is that:
 
 #### Build artifacts
 
-Anything you can build with `x.py` is a _build artifact_.
+Anything you can build with `x` is a _build artifact_.
 Build artifacts include, but are not limited to:
 
 - binaries, like `stage0-rustc/rustc-main`
@@ -173,27 +173,27 @@ Build artifacts include, but are not limited to:
 
 #### Examples
 
-- `./x.py build --stage 0` means to build with the beta `rustc`.
-- `./x.py doc --stage 0` means to document using the beta `rustdoc`.
-- `./x.py test --stage 0 library/std` means to run tests on the standard library
-    without building `rustc` from source ('build with stage 0, then test the
+- `./x build --stage 0` means to build with the beta `rustc`.
+- `./x doc --stage 0` means to document using the beta `rustdoc`.
+- `./x test --stage 0 library/std` means to run tests on the standard library
+  without building `rustc` from source ('build with stage 0, then test the
   artifacts'). If you're working on the standard library, this is normally the
   test command you want.
-- `./x.py test tests/ui` means to build the stage 1 compiler and run
+- `./x test tests/ui` means to build the stage 1 compiler and run
   `compiletest` on it. If you're working on the compiler, this is normally the
   test command you want.
 
 #### Examples of what *not* to do
 
-- `./x.py test --stage 0 tests/ui` is not useful: it runs tests on the
+- `./x test --stage 0 tests/ui` is not useful: it runs tests on the
   _beta_ compiler and doesn't build `rustc` from source. Use `test tests/ui`
   instead, which builds stage 1 from source.
-- `./x.py test --stage 0 compiler/rustc` builds the compiler but runs no tests:
+- `./x test --stage 0 compiler/rustc` builds the compiler but runs no tests:
   it's running `cargo test -p rustc`, but cargo doesn't understand Rust's
   tests. You shouldn't need to use this, use `test` instead (without arguments).
-- `./x.py build --stage 0 compiler/rustc` builds the compiler, but does not build
-  libstd or even libcore. Most of the time, you'll want `./x.py build
-  library` instead, which allows compiling programs without needing to define
+- `./x build --stage 0 compiler/rustc` builds the compiler, but does not build
+  libstd or even libcore. Most of the time, you'll want `./x build
+library` instead, which allows compiling programs without needing to define
   lang items.
 
 ### Building vs. running
@@ -243,7 +243,7 @@ artifacts into the appropriate place, skipping the cargo invocation.
 For instance, you might want to build an ARM version of rustc using an x86 machine.
 Building stage2 `std` is different when you are cross-compiling.
 
-This is because `x.py` uses a trick: if `HOST` and `TARGET` are the same,
+This is because `x` uses a trick: if `HOST` and `TARGET` are the same,
 it will reuse stage1 `std` for stage2! This is sound because stage1 `std`
 was compiled with the stage1 compiler, i.e. a compiler using the source code
 you currently have checked out. So it should be identical (and therefore ABI-compatible)
@@ -362,7 +362,7 @@ You can find more discussion about sysroots in:
 
 ## Passing flags to commands invoked by `bootstrap`
 
-`x.py` allows you to pass stage-specific flags to `rustc` and `cargo` when bootstrapping.
+`x` allows you to pass stage-specific flags to `rustc` and `cargo` when bootstrapping.
 The `RUSTFLAGS_BOOTSTRAP` environment variable is passed as `RUSTFLAGS` to the bootstrap stage
 (stage0), and `RUSTFLAGS_NOT_BOOTSTRAP` is passed when building artifacts for later stages.
 `RUSTFLAGS` will work, but also affects the build of `bootstrap` itself, so it will be rare to want
@@ -395,7 +395,7 @@ If `./stageN/bin/rustc` gives an error about environment variables, that
 usually means something is quite wrong -- or you're trying to compile e.g.
 `rustc` or `std` or something that depends on environment variables. In
 the unlikely case that you actually need to invoke rustc in such a situation,
-you can tell the bootstrap shim to print all env variables by adding `-vvv` to your `x.py` command.
+you can tell the bootstrap shim to print all env variables by adding `-vvv` to your `x` command.
 
 Finally, bootstrap makes use of the [cc-rs crate] which has [its own
 method][env-vars] of configuring C compilers and C flags via environment
@@ -408,7 +408,7 @@ variables.
 
 In this part, we will investigate the build command's stdout in an action
 (similar, but more detailed and complete documentation compare to topic above).
-When you execute `x.py build --dry-run` command, the build output will be something
+When you execute `x build --dry-run` command, the build output will be something
 like the following:
 
 ```text
