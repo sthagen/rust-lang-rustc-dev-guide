@@ -5,9 +5,6 @@
 The compiler is built using a tool called `x.py`. You will need to
 have Python installed to run it.
 
-For instructions on how to install Python and other prerequisites,
-see [the `rust-lang/rust` README][readme].
-
 ## Get the source code
 
 The main repository is [`rust-lang/rust`][repo]. This contains the compiler,
@@ -15,7 +12,6 @@ the standard library (including `core`, `alloc`, `test`, `proc_macro`, etc),
 and a bunch of tools (e.g. `rustdoc`, the bootstrapping infrastructure, etc).
 
 [repo]: https://github.com/rust-lang/rust
-[readme]: https://github.com/rust-lang/rust#building-on-a-unix-like-system
 
 The very first step to work on `rustc` is to clone the repository:
 
@@ -134,7 +130,7 @@ of a checkout. It also looks up the appropriate version of `python` to use.
 You can install it with `cargo install --path src/tools/x`.
 
 To clarify that this is another global installed binary util, which is
-similar to the fromer `x` declared in section [What is `x.py`](#what-is-xpy) but
+similar to the one declared in section [What is `x.py`](#what-is-xpy), but
 it works as an independent process to execute the `x.py` rather than calling the 
 shell to run the platform related scripts.
 
