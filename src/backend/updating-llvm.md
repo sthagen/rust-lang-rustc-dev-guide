@@ -90,8 +90,7 @@ so let's go through each in detail.
    `src/llvm-project` to ensure submodule updates aren't reverted.
    Some commands you should execute are:
 
-   * `./x build src/llvm` - test that LLVM still builds
-   * `./x build src/tools/lld` - same for LLD
+   * `./x build src/llvm-project` - test that LLVM still builds
    * `./x build` - build the rest of rustc
 
    You'll likely need to update [`llvm-wrapper/*.cpp`][`llvm-wrapper`]
