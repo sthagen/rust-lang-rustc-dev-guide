@@ -396,6 +396,9 @@ with the `run_make_support` library linked in.
 If you need new utilities or functionality, consider extending and improving
 the [`run_make_support`] library.
 
+Compiletest directives like `//@ only-<target>` or `//@ ignore-<target>` are supported in
+`rmake.rs`, like in UI tests.
+
 Two `run-make` tests are ported over to Rust recipes as examples:
 
 - <https://github.com/rust-lang/rust/tree/master/tests/run-make/CURRENT_RUSTC_VERSION>
@@ -501,10 +504,11 @@ only running the main `coverage` suite.
 ## Building auxiliary crates
 
 It is common that some tests require additional auxiliary crates to be compiled.
-There are two [headers](headers.md) to assist with that:
+There are three [headers](headers.md) to assist with that:
 
 * `aux-build`
 * `aux-crate`
+* `aux-bin`
 
 `aux-build` will build a separate crate from the named source file.
 The source file should be in a directory called `auxiliary` beside the test file.
@@ -528,6 +532,10 @@ as renaming a dependency.
 For example, `// aux-crate:foo=bar.rs` will compile `auxiliary/bar.rs` and
 make it available under then name `foo` within the test.
 This is similar to how Cargo does dependency renaming.
+
+`aux-bin` is similar to `aux-build` but will build a binary instead of a
+library. The binary will be available in `auxiliary/bin` relative to the working
+directory of the test.
 
 ### Auxiliary proc-macro
 
