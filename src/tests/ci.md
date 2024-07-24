@@ -209,7 +209,7 @@ override the cache for the others. Instead, we store the images under different
 tags, identifying them with a custom hash made from the contents of all the
 Dockerfiles and related scripts.
 
-[ghcr.io]: https://ghcr.io/rust-lang-ci/rust-ci
+[ghcr.io]: https://github.com/rust-lang-ci/rust/pkgs/container/rust-ci
 [Docker registry caching]: https://docs.docker.com/build/cache/backends/registry/
 
 ### LLVM caching with sccache
@@ -264,7 +264,7 @@ few days before we promote nightly to beta.
 More information is available in the [toolstate documentation].
 
 [rust-toolstate]: https://rust-lang-nursery.github.io/rust-toolstate
-[toolstate documentation]: ../toolstate.md
+[toolstate documentation]: https://forge.rust-lang.org/infra/toolstate.html
 
 [GitHub Actions]: https://github.com/rust-lang/rust/actions
 [`jobs.yml`]: https://github.com/rust-lang/rust/blob/master/src/ci/github-actions/jobs.yml
