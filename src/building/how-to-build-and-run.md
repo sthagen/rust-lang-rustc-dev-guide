@@ -67,8 +67,8 @@ Also, using `x` rather than `x.py` is recommended as:
 
 (You can find the platform related scripts around the `x.py`, like `x.ps1`)
 
-Notice that this is not absolute, for instance, using Nushell in VSCode on Win10,
-typing `x` or `./x` still open the `x.py` in editor rather invoke the program :)
+Notice that this is not absolute. For instance, using Nushell in VSCode on Win10,
+typing `x` or `./x` still opens `x.py` in an editor rather than invoking the program. :)
 
 In the rest of this guide, we use `x` rather than `x.py` directly. The following
 command:
@@ -366,5 +366,19 @@ everything up then you only need to run one command!
 
 `rm -rf build` works too, but then you have to rebuild LLVM, which can take
 a long time even on fast computers.
+
+## Remarks on disk space
+
+Building the compiler (especially if beyond stage 1) can require significant amounts of free disk
+space, possibly around 100GB. This is compounded if you have a separate build directory for
+rust-analyzer (e.g. `build-rust-analyzer`). This is easy to hit with dev-desktops which have a [set
+disk
+quota](https://github.com/rust-lang/simpleinfra/blob/8a59e4faeb75a09b072671c74a7cb70160ebef50/ansible/roles/dev-desktop/defaults/main.yml#L7)
+for each user, but this also applies to local development as well. Occassionally, you may need to:
+
+- Remove `build/` directory.
+- Remove `build-rust-analyzer/` directory (if you have a separate rust-analyzer build directory).
+- Uninstall unnecessary toolchains if you use `cargo-bisect-rustc`. You can check which toolchains
+  are installed with `rustup toolchain list`.
 
 [^1]: issue[#1707](https://github.com/rust-lang/rustc-dev-guide/issues/1707)
