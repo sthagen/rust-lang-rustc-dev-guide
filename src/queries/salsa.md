@@ -9,13 +9,12 @@ want to watch [Salsa In More
 Depth](https://www.youtube.com/watch?v=i_IhACacPRY), also by Niko
 Matsakis.
 
-> As of <!-- date-check --> November 2022, although Salsa is inspired by
-> (among other things) rustc's query system, it is not used directly in rustc.
-> It _is_ used in [chalk], an implementation of  Rust's trait system, and extensively in
-> [`rust-analyzer`], the official implementation of the language server protocol for Rust, but
-> there are no  medium or long-term concrete plans to integrate it into the
-> compiler.
-
+> As of <!-- date-check --> November 2022, although Salsa is inspired by (among
+> other things) rustc's query system, it is not used directly in rustc. It
+> _is_ used in [chalk], an implementation of  Rust's trait system, and
+> extensively in [`rust-analyzer`], the official implementation of the language
+> server protocol for Rust, but there are no  medium or long-term concrete
+> plans to integrate it into the compiler.
 
 [`rust-analyzer`]: https://rust-analyzer.github.io/
 [chalk]: https://rust-lang.github.io/chalk/book/what_is_chalk.html
@@ -28,17 +27,16 @@ of future computations.
 
 The objectives of Salsa are:
  * Provide that functionality in an automatic way, so reusing old computations
-   is done automatically by the library
+   is done automatically by the library.
  * Doing so in a "sound", or "correct", way, therefore leading to the same
-   results as if it had been done from scratch
+   results as if it had been done from scratch.
 
-Salsa's actual model is much richer, allowing many kinds of inputs and many
-different outputs.
-For example, integrating Salsa with an IDE could mean that the inputs could be
-the manifest (`Cargo.toml`), entire source files (`foo.rs`), snippets and so
-on; the outputs of such an integration could range from a binary executable, to
-lints, types (for example, if a user selects a certain variable and wishes to
-see its type), completions, etc.
+Salsa's actual model is much richer, allowing many kinds of inputs and many different outputs.
+For example, integrating Salsa with an IDE could mean that
+the inputs could be manifests (`Cargo.toml`, `rust-toolchain.toml`), entire
+source files (`foo.rs`), snippets and so on. The outputs of such an integration
+could range from a binary executable, to lints, types (for example, if a user
+selects a certain variable and wishes to see its type), completions, etc.
 
 ## How does it work?
 
@@ -50,8 +48,8 @@ something that the library produces, but, for each derived value there's a
 "pure" function that computes the derived value.
 
 For example, there might be a function `ast(x: Path) -> AST`. The produced
-`AST` isn't a final value, it's an intermediate value that the library would
-use for the computation.
+Abstract Syntax Tree (`AST`) isn't a final value, it's an intermediate value
+that the library would use for the computation.
 
 This means that when you try to compute with the library, Salsa is going to
 compute various derived values, and eventually read the input and produce the
@@ -94,23 +92,23 @@ haven't changed.
 
 A query is some value that Salsa can access in the course of computation.  Each
 query can have a number of keys (from 0 to many), and all queries have a
-result, akin to functions.  0-key queries are called "input" queries.
+result, akin to functions.  `0-key` queries are called "input" queries.
 
 ### Database
 
 The database is basically the context for the entire computation, it's meant to
 store Salsa's internal state, all intermediate values for each query, and
-anything else that the computation might need.  The database must know all the
-queries that the library is going to do before it can be built, but they don't
-need to be specified in the same place.
+anything else that the computation might need. The database must know all the
+queries the library is going to do before it can be built, but they don't need
+to be specified in the same place.
 
 After the database is formed, it can be accessed with queries that are very
-similar to functions.  Since each query's result is stored in the database,
-when a query is invoked N times, it will return N **cloned** results, without
-having to recompute the query (unless the input has changed in such a way that
-it warrants recomputation).
+similar to functions. Since each query's result is stored in the database, when
+a query is invoked `N`-times, it will return `N`-**cloned** results, without having
+to recompute the query (unless the input has changed in such a way that it
+warrants recomputation).
 
-For each input query (0-key), a "set" method is generated, allowing the user to
+For each input query (`0-key`), a "set" method is generated, allowing the user to
 change the output of such query, and trigger previous memoized values to be
 potentially invalidated.
 
@@ -126,13 +124,13 @@ To create a query group a trait annotated with a specific attribute
 (`#[salsa::query_group(...)]`) has to be created.
 
 An argument must also be provided to said attribute as it will be used by Salsa
-to create a struct to be used later when the database is created.
+to create a `struct` to be used later when the database is created.
 
 Example input query group:
 
 ```rust,ignore
 /// This attribute will process this tree, produce this tree as output, and produce
-/// a bunch of intermediate stuff that Salsa also uses.  One of these things is a
+/// a bunch of intermediate stuff that Salsa also uses. One of these things is a
 /// "StorageStruct", whose name we have specified in the attribute.
 ///
 /// This query group is a bunch of **input** queries, that do not rely on any
@@ -154,9 +152,9 @@ this one depends on by specifying them as supertraits, as seen in the following
 example:
 
 ```rust,ignore
-/// This query group is going to contain queries that depend on derived values. A
-/// query group can access another query group's queries by specifying the
-/// dependency as a super trait. Query groups can be stacked as much as needed using
+/// This query group is going to contain queries that depend on derived values.
+/// A query group can access another query group's queries by specifying the
+/// dependency as a supertrait. Query groups can be stacked as much as needed using
 /// that pattern.
 #[salsa::query_group(ParserStorage)]
 pub trait Parser: Inputs {
@@ -168,14 +166,15 @@ pub trait Parser: Inputs {
 
 When creating a derived query the implementation of said query must be defined
 outside the trait.  The definition must take a database parameter as an `impl
-Trait` (or `dyn Trait`), where `Trait` is the query group that the definition
+Trait` (or `dyn Trait`), where trait is the query group that the definition
 belongs to, in addition to the other keys.
 
 ```rust,ignore
-///This is going to be the definition of the `ast` query in the `Parser` trait.
-///So, when the query `ast` is invoked, and it needs to be recomputed, Salsa is going to call this function
-///and it's going to give it the database as `impl Parser`.
-///The function doesn't need to be aware of all the queries of all the query groups
+/// This is going to be the definition of the `ast` query in the `Parser` trait.
+/// So, when the query `ast` is invoked, and it needs to be recomputed, Salsa is
+/// going to call this function and it's going to give it the database as `impl
+/// Parser`. The function doesn't need to be aware of all the queries of all the
+/// query groups
 fn ast(db: &impl Parser, name: String) -> String {
     //! Note, `impl Parser` is used here but `dyn Parser` works just as well
     /* code */
@@ -187,11 +186,11 @@ fn ast(db: &impl Parser, name: String) -> String {
 ```
 
 Eventually, after all the query groups have been defined, the database can be
-created by declaring a struct.
+created by declaring a `struct`.
 
-To specify which query groups are going to be part of the database an attribute
-(`#[salsa::database(...)]`) must be added. The argument of said attribute is a
-list of identifiers, specifying the query groups **storages**.
+To specify which query groups are going to be part of the database an `attribute`
+(`#[salsa::database(...)]`) must be added. The argument of said `attribute` is a
+list of `identifiers`, specifying the query groups **storages**.
 
 ```rust,ignore
 ///This attribute specifies which query groups are going to be in the database
