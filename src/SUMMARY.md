@@ -21,10 +21,11 @@
         - [Testing with Docker](./tests/docker.md)
         - [Testing with CI](./tests/ci.md)
     - [Adding new tests](./tests/adding.md)
+    - [Best practices](./tests/best-practices.md)
     - [Compiletest](./tests/compiletest.md)
         - [UI tests](./tests/ui.md)
-        - [Test headers](./tests/headers.md)
-    - [Integration testing](./tests/integration.md)
+        - [Test headers](./tests/directives.md)
+    - [Ecosystem testing](./tests/ecosystem.md)
         - [Crater](./tests/crater.md)
         - [Fuchsia](./tests/fuchsia.md)
         - [Rust for Linux](./tests/rust-for-linux.md)
@@ -35,6 +36,7 @@
 - [Profiling the compiler](./profiling.md)
     - [with the linux perf tool](./profiling/with_perf.md)
     - [with Windows Performance Analyzer](./profiling/wpa_profiling.md)
+    - [with the Rust benchmark suite](./profiling/with_rustc_perf.md)
 - [crates.io Dependencies](./crates-io.md)
 
 # Contributing to Rust
