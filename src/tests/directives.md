@@ -65,19 +65,19 @@ not be exhaustive. Directives can generally be found by browsing the
 See [Controlling pass/fail
 expectations](ui.md#controlling-passfail-expectations).
 
-| Directive                   | Explanation                                 | Supported test suites                            | Possible values |
-|-----------------------------|---------------------------------------------|--------------------------------------------------|-----------------|
-| `check-pass`                | Building (no codegen) should pass           | `ui`, `crashes`, `incremental`[^inc1]            | N/A             |
-| `check-fail`                | Building (no codegen) should fail           | `ui`, `crashes`                                  | N/A             |
-| `build-pass`                | Building should pass                        | `ui`, `crashes`, `codegen`, `incremental`[^inc1] | N/A             |
-| `build-fail`                | Building should fail                        | `ui`, `crashes`                                  | N/A             |
-| `run-pass`                  | Running the test binary should pass         | `ui`, `crashes`, `incremental`[^inc1]            | N/A             |
-| `run-fail`                  | Running the test binary should fail         | `ui`, `crashes`                                  | N/A             |
-| `ignore-pass`               | Ignore `--pass` flag                        | `ui`, `crashes`, `codegen`, `incremental`[^inc1] | N/A             |
-| `dont-check-failure-status` | Don't check exact failure status (i.e. `1`) | `ui`, `incremental`                              | N/A             |
-| `failure-status`            | Check                                       | `ui`, `crashes`                                  | Any `u16`       |
-| `should-ice`                | Check failure status is `101`               | `coverage`, `incremental`                        | N/A             |
-| `should-fail`               | Compiletest self-test                       | All                                              | N/A             |
+| Directive                   | Explanation                                 | Supported test suites                     | Possible values |
+|-----------------------------|---------------------------------------------|-------------------------------------------|-----------------|
+| `check-pass`                | Building (no codegen) should pass           | `ui`, `crashes`, `incremental`            | N/A             |
+| `check-fail`                | Building (no codegen) should fail           | `ui`, `crashes`                           | N/A             |
+| `build-pass`                | Building should pass                        | `ui`, `crashes`, `codegen`, `incremental` | N/A             |
+| `build-fail`                | Building should fail                        | `ui`, `crashes`                           | N/A             |
+| `run-pass`                  | Running the test binary should pass         | `ui`, `crashes`, `incremental`            | N/A             |
+| `run-fail`                  | Running the test binary should fail         | `ui`, `crashes`                           | N/A             |
+| `ignore-pass`               | Ignore `--pass` flag                        | `ui`, `crashes`, `codegen`, `incremental` | N/A             |
+| `dont-check-failure-status` | Don't check exact failure status (i.e. `1`) | `ui`, `incremental`                       | N/A             |
+| `failure-status`            | Check                                       | `ui`, `crashes`                           | Any `u16`       |
+| `should-ice`                | Check failure status is `101`               | `coverage`, `incremental`                 | N/A             |
+| `should-fail`               | Compiletest self-test                       | All                                       | N/A             |
 
 ### Controlling output snapshots and normalizations
 
@@ -85,26 +85,26 @@ See [Normalization](ui.md#normalization), [Output
 comparison](ui.md#output-comparison) and [Rustfix tests](ui.md#rustfix-tests)
 for more details.
 
-| Directive                         | Explanation                                                                                                              | Supported test suites                               | Possible values                                                                         |
-|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------|
-| `check-run-results`               | Check run test binary `run-{pass,fail}` output snapshot                                                                  | `ui`, `crashes`, `incremental`[^inc1] if `run-pass` | N/A                                                                                     |
-| `error-pattern`                   | Check that output contains a regex pattern                                                                               | `ui`, `crashes`, `incremental`[^inc1] if `run-pass` | Regex                                                                                   |
-| `check-stdout`                    | Check `stdout` against `error-pattern`s from running test binary[^check_stdout]                                          | `ui`, `crashes`, `incremental`[^inc1]               | N/A                                                                                     |
-| `compare-output-lines-by-subset`  | Check output contains the contents of the snapshot by lines opposed to checking for strict equality                      | `ui`, `coverage`                                    | N/A                                                                                     |
-| `normalize-stderr-32bit`          | Normalize actual stderr (for 32-bit platforms) with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot | `ui`, `incremental`[^inc1]                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
-| `normalize-stderr-64bit`          | Normalize actual stderr (for 64-bit platforms) with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot | `ui`, `incremental`[^inc1]                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
-| `normalize-stderr-test`           | Normalize actual stderr with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot                        | `ui`, `incremental`[^inc1]                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
-| `normalize-stdout-test`           | Normalize actual stdout with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot                        | `ui`, `incremental`[^inc1]                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
-| `dont-check-compiler-stderr`      | Don't check actual compiler stderr vs stderr snapshot                                                                    | `ui`                                                | N/A                                                                                     |
-| `dont-check-compiler-stdout`      | Don't check actual compiler stdout vs stdout snapshot                                                                    | `ui`                                                | N/A                                                                                     |
-| `run-rustfix`                     | Apply all suggestions via `rustfix`, snapshot fixed output, and check fixed output builds                                | `ui`                                                | N/A                                                                                     |
-| `rustfix-only-machine-applicable` | `run-rustfix` but only machine-applicable suggestions                                                                    | `ui`                                                | N/A                                                                                     |
-| `exec-env`                        | Env var to set when executing a test                                                                                     | `ui`, `crashes`                                     | `<KEY>=<VALUE>`                                                                         |
-| `unset-exec-env`                  | Env var to unset when executing a test                                                                                   | `ui`, `crashes`                                     | Any env var name                                                                        |
-| `stderr-per-bitwidth`             | Generate a stderr snapshot for each bitwidth                                                                             | `ui`                                                | N/A                                                                                     |
-| `forbid-output`                   | A pattern which must not appear in `cfail` output                                                                        | `incremental`                                       | Regex pattern                                                                           |
-| `run-flags`                       | Flags passed to the test executable                                                                                      | `ui`                                                | Arbitrary flags                                                                         |
-| `known-bug`                       | No error annotation needed due to known bug                                                                              | `ui`, `crashes`, `incremental`                      | Issue number `#123456`                                                                  |
+| Directive                         | Explanation                                                                                                              | Supported test suites                        | Possible values                                                                         |
+|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------|----------------------------------------------|-----------------------------------------------------------------------------------------|
+| `check-run-results`               | Check run test binary `run-{pass,fail}` output snapshot                                                                  | `ui`, `crashes`, `incremental` if `run-pass` | N/A                                                                                     |
+| `error-pattern`                   | Check that output contains a regex pattern                                                                               | `ui`, `crashes`, `incremental` if `run-pass` | Regex                                                                                   |
+| `check-stdout`                    | Check `stdout` against `error-pattern`s from running test binary[^check_stdout]                                          | `ui`, `crashes`, `incremental`               | N/A                                                                                     |
+| `compare-output-lines-by-subset`  | Check output contains the contents of the snapshot by lines opposed to checking for strict equality                      | `ui`, `coverage`                             | N/A                                                                                     |
+| `normalize-stderr-32bit`          | Normalize actual stderr (for 32-bit platforms) with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot | `ui`, `incremental`                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
+| `normalize-stderr-64bit`          | Normalize actual stderr (for 64-bit platforms) with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot | `ui`, `incremental`                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
+| `normalize-stderr-test`           | Normalize actual stderr with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot                        | `ui`, `incremental`                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
+| `normalize-stdout-test`           | Normalize actual stdout with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot                        | `ui`, `incremental`                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
+| `dont-check-compiler-stderr`      | Don't check actual compiler stderr vs stderr snapshot                                                                    | `ui`                                         | N/A                                                                                     |
+| `dont-check-compiler-stdout`      | Don't check actual compiler stdout vs stdout snapshot                                                                    | `ui`                                         | N/A                                                                                     |
+| `run-rustfix`                     | Apply all suggestions via `rustfix`, snapshot fixed output, and check fixed output builds                                | `ui`                                         | N/A                                                                                     |
+| `rustfix-only-machine-applicable` | `run-rustfix` but only machine-applicable suggestions                                                                    | `ui`                                         | N/A                                                                                     |
+| `exec-env`                        | Env var to set when executing a test                                                                                     | `ui`, `crashes`                              | `<KEY>=<VALUE>`                                                                         |
+| `unset-exec-env`                  | Env var to unset when executing a test                                                                                   | `ui`, `crashes`                              | Any env var name                                                                        |
+| `stderr-per-bitwidth`             | Generate a stderr snapshot for each bitwidth                                                                             | `ui`                                         | N/A                                                                                     |
+| `forbid-output`                   | A pattern which must not appear in `cfail` output                                                                        | `incremental`                                | Regex pattern                                                                           |
+| `run-flags`                       | Flags passed to the test executable                                                                                      | `ui`                                         | Arbitrary flags                                                                         |
+| `known-bug`                       | No error annotation needed due to known bug                                                                              | `ui`, `crashes`, `incremental`               | Issue number `#123456`                                                                  |
 
 [^check_stdout]: presently <!-- date-check: Oct 2024 --> this has a weird quirk
     where the test binary's stdout and stderr gets concatenated and then
@@ -190,9 +190,12 @@ The following directives will check LLVM support:
 - `needs-forced-clang-based-tests` — test is ignored unless the environment
   variable `RUSTBUILD_FORCE_CLANG_BASED_TESTS` is set, which enables building
   clang alongside LLVM
-  - This is only set in one CI job ([`x86_64-gnu-debug`]), which only runs a
-    tiny subset of `run-make` tests. Other tests with this directive will not
+  - This is only set in two CI jobs ([`x86_64-gnu-debug`] and
+    [`aarch64-gnu-debug`]), which only runs a
+    subset of `run-make` tests. Other tests with this directive will not
     run at all, which is usually not what you want.
+  - Notably, the [`aarch64-gnu-debug`] CI job *currently* only runs `run-make`
+    tests which additionally contain `clang` in their test name.
 
 See also [Debuginfo tests](compiletest.md#debuginfo-tests) for directives for
 ignoring debuggers.
@@ -200,6 +203,7 @@ ignoring debuggers.
 [remote testing]: running.md#running-tests-on-a-remote-machine
 [compare modes]: ui.md#compare-modes
 [`x86_64-gnu-debug`]: https://github.com/rust-lang/rust/blob/ab3dba92db355b8d97db915a2dca161a117e959c/src/ci/docker/host-x86_64/x86_64-gnu-debug/Dockerfile#L32
+[`aarch64-gnu-debug`]: https://github.com/rust-lang/rust/blob/20c909ff9cdd88d33768a4ddb8952927a675b0ad/src/ci/docker/host-aarch64/aarch64-gnu-debug/Dockerfile#L32
 
 ### Affecting how tests are built
 
@@ -245,6 +249,9 @@ See [Pretty-printer](compiletest.md#pretty-printer-tests).
       output pattern
 - [`should-ice`](compiletest.md#incremental-tests) — incremental cfail should
       ICE
+- [`reference`] — an annotation linking to a rule in the reference
+
+[`reference`]: https://github.com/rust-lang/reference/blob/master/docs/authoring.md#test-rule-annotations
 
 ### Tool-specific directives
 
