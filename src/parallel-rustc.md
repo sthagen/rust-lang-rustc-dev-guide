@@ -1,8 +1,9 @@
 # Parallel Compilation
 
 <div class="warning">
-Parallel front-end is currently (as of 2024 November) undergoing significant
-changes, this page contains quite a bit of outdated information.
+As of <!-- date-check --> November 2024,
+the parallel front-end is undergoing significant changes,
+so this page contains quite a bit of outdated information.
 
 Tracking issue: <https://github.com/rust-lang/rust/issues/113349>
 </div>
@@ -20,7 +21,7 @@ parallelized.
   still executed in serial mode.
 
 <div class="warning">
-The follow sections are kept for now but are quite outdated.
+The following sections are kept for now but are quite outdated.
 </div>
 
 ---
