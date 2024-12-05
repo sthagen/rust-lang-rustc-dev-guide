@@ -94,7 +94,6 @@ for more details.
 | `check-run-results`               | Check run test binary `run-{pass,fail}` output snapshot                                                                  | `ui`, `crashes`, `incremental` if `run-pass` | N/A                                                                                     |
 | `error-pattern`                   | Check that output contains a regex pattern                                                                               | `ui`, `crashes`, `incremental` if `run-pass` | Regex                                                                                   |
 | `check-stdout`                    | Check `stdout` against `error-pattern`s from running test binary[^check_stdout]                                          | `ui`, `crashes`, `incremental`               | N/A                                                                                     |
-| `compare-output-lines-by-subset`  | Check output contains the contents of the snapshot by lines opposed to checking for strict equality                      | `ui`, `coverage`                             | N/A                                                                                     |
 | `normalize-stderr-32bit`          | Normalize actual stderr (for 32-bit platforms) with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot | `ui`, `incremental`                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
 | `normalize-stderr-64bit`          | Normalize actual stderr (for 64-bit platforms) with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot | `ui`, `incremental`                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
 | `normalize-stderr-test`           | Normalize actual stderr with a rule `"<raw>" -> "<normalized>"` before comparing against snapshot                        | `ui`, `incremental`                          | `"<RAW>" -> "<NORMALIZED>"`, `<RAW>`/`<NORMALIZED>` is regex capture and replace syntax |
@@ -183,6 +182,10 @@ settings:
   assertions.
 - `needs-rustc-debug-assertions` — ignores if rustc was not built with debug
   assertions.
+- `needs-target-has-atomic` — ignores if target does not have support for all
+  specified atomic widths, e.g. the test with `//@ needs-target-has-atomic: 8,
+  16, ptr` will only run if it supports the comma-separated list of atomic
+  widths.
 
 The following directives will check LLVM support:
 
