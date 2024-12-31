@@ -56,8 +56,14 @@ The build files are found in the `book/html` directory.
 
 ### Link Validations
 
-We use `mdbook-linkcheck2` to validate URLs included in our documentation.
-`linkcheck` will be run automatically when you build with the instructions in the section above.
+We use `mdbook-linkcheck2` to validate URLs included in our documentation. Link
+checking is **not** run by default locally, though it is in CI. To enable it
+locally, set the environment variable `ENABLE_LINKCHECK=1` like in the
+following example.
+
+```console
+$ ENABLE_LINKCHECK=1 mdbook serve
+```
 
 ### Table of Contents
 
@@ -66,9 +72,10 @@ including the `<!-- toc -->` marker at the place where you want the TOC.
 
 ## How to fix toolstate failures
 
-> **NOTE**: Currently, we do not track the rustc-dev-guide toolstate due to
-[spurious failures](https://github.com/rust-lang/rust/pull/71731),
-but we leave these instructions for when we do it again in the future.
+> [!NOTE]
+> Currently, we do not track the rustc-dev-guide toolstate due to
+> [spurious failures](https://github.com/rust-lang/rust/pull/71731),
+> but we leave these instructions for when we do it again in the future.
 
 1. You will get a ping from the toolstate commit. e.g. https://github.com/rust-lang-nursery/rust-toolstate/commit/8ffa0e4c30ac9ba8546b7046e5c4ccc2b96ebdd4
 
